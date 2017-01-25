@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -22,7 +23,7 @@ namespace UwpDrone
             public Vector3 magnetometer;
         };
 
-        enum Channels
+        public enum Channels
         {
             Roll,
             Pitch,
@@ -36,29 +37,11 @@ namespace UwpDrone
 
         public IMU imu;
 
-        Dictionary<Channels, UInt16> receiver = new Dictionary<Channels, UInt16>();
+        public Dictionary<Channels, UInt16> receiver = new Dictionary<Channels, UInt16>();
 
-        public void Arm()
-        {
-            setChannel(Channels.Arm, kChannelArmValue);
-        }
+        public delegate void RCChannelsUpdatedDelegate();
 
-        public void Disarm()
-        {
-            setChannel(Channels.Arm, kChannelDisarmValue);
-        }
-
-        public void ToggleArm()
-        {
-            if (receiver[Channels.Arm] == kChannelArmValue)
-            {
-                Disarm();
-            }
-            else
-            {
-                Arm();
-            }
-        }
+        public event RCChannelsUpdatedDelegate ChannelDelegate;
 
         private enum MSP_Op : byte
         {
@@ -116,22 +99,23 @@ namespace UwpDrone
         private DataWriter writer = null;
         private DataReader reader = null;
 
-        const UInt16 kStickMin = 800;
-        const UInt16 kStickMax = 2115;
-        const UInt16 kChannelArmValue = 1024;
-        const UInt16 kChannelDisarmValue = 1500;
+        const UInt16 kStickMin = 1000;
+        const UInt16 kStickMid = 1500;
+        const UInt16 kStickMax = 2000;
+        const UInt16 kChannelArmValue = 1500;
+        const UInt16 kChannelDisarmValue = 800;
         const UInt16 kChannelCount = 8;
 
         public MSP()
         {
-            receiver[Channels.Roll] = kStickMin;
-            receiver[Channels.Pitch] = kStickMin;
-            receiver[Channels.Yaw] = kStickMin;
+            receiver[Channels.Roll] = kStickMid;
+            receiver[Channels.Pitch] = kStickMid;
+            receiver[Channels.Yaw] = kStickMid;
             receiver[Channels.Throttle] = kStickMin;
             receiver[Channels.Arm] = kStickMin;
-            receiver[Channels.Aux2] = kStickMin;
-            receiver[Channels.Aux3] = kStickMin;
-            receiver[Channels.Aux4] = kStickMin;
+            receiver[Channels.Aux2] = kStickMid;
+            receiver[Channels.Aux3] = kStickMid;
+            receiver[Channels.Aux4] = kStickMid;
         }
 
         public async Task connect(string identifyingSubStr = "VID_10C4") //USB\VID_10C4&PID_EA60
@@ -156,14 +140,17 @@ namespace UwpDrone
                         _device.Handshake = SerialHandshake.None;
                         _device.ReadTimeout = TimeSpan.FromSeconds(5);
                         _device.WriteTimeout = TimeSpan.FromSeconds(5);
-                        _device.Handshake = SerialHandshake.RequestToSendXOnXOff;
-                        _device.IsDataTerminalReadyEnabled = true;
-
+                        _device.Handshake = SerialHandshake.XOnXOff;
+                        //_device.IsDataTerminalReadyEnabled = true;
                         writer = new DataWriter(_device.OutputStream);
                         reader = new DataReader(_device.InputStream);
                         reader.InputStreamOptions = InputStreamOptions.Partial;
 
                         startWatchingResponses();
+
+
+                        await sendIdent();
+                        await getRCState();
 
                         return;
                     }
@@ -189,34 +176,129 @@ namespace UwpDrone
             Outbound
         };
 
+        public void Arm()
+        {
+            setChannel(Channels.Arm, kChannelArmValue);
+        }
+
+        public void Disarm()
+        {
+            setChannel(Channels.Arm, kChannelDisarmValue);
+        }
+
+        public void ToggleArm()
+        {
+            if (receiver[Channels.Arm] == kChannelArmValue)
+            {
+                Disarm();
+            }
+            else
+            {
+                Arm();
+            }
+        }
+
+        public double Throttle
+        {
+            get
+            {
+                var rawThrottle = receiver[Channels.Throttle];
+                double throttle = (rawThrottle - kStickMin) / (double)(kStickMax - kStickMin);
+
+                return throttle;
+            }
+
+            set
+            {
+
+                setChannel(Channels.Throttle, value);
+            }
+        }
+
+        private async Task sendIdent()
+        {
+            await sendMessage(MSP_Op.Identify);
+        }
+
+        private async Task getRCState()
+        {
+            await sendMessage(MSP_Op.RC);
+        }
+
+        private async Task sendMessage(MSP_Op op, byte[] bytes = null)
+        {
+            byte opCode = (byte)op;
+            byte dataLength = 0;
+            if (bytes != null)
+            {
+                if (bytes.Length > 255)
+                {
+                    Debug.WriteLine("Sending a message longer than an MSP message");
+                    return;
+                }
+                else
+                {
+                    dataLength = (byte)bytes.Length;
+                }
+            }
+            writer.WriteByte(36); // $
+            writer.WriteByte(77); // M
+            writer.WriteByte(60); // < 
+            writer.WriteByte(dataLength);
+            writer.WriteByte(opCode);
+
+            byte checksum = (byte)(dataLength ^ opCode);
+
+            if (dataLength == 0)
+            {
+                writer.WriteByte(checksum);
+            }
+            else
+            {
+                foreach (var b in bytes)
+                {
+                    writer.WriteByte(b);
+
+                    checksum ^= b;
+                }
+                writer.WriteByte(checksum);
+            }
+
+            await writer.StoreAsync();
+        }
+
         private void setChannel(Channels channel, UInt16 value)
         {
+            if (writer == null)
+            {
+                return;
+            }
+
             Task t = Task.Run(async () =>
             {
                 receiver[channel] = value;
-                writer.WriteByte(36);
-                writer.WriteByte(77);
-                writer.WriteByte(60);
-                writer.WriteByte(2);
-                writer.WriteByte((byte)MSP_Op.RC);
+
+                MemoryStream stream = new MemoryStream();
+                BinaryWriter byteWriter = new BinaryWriter(stream);
 
                 var values = receiver.Values.ToArray();
 
                 for (UInt16 i = 0; i < kChannelCount; i++)
                 {
-                    writer.WriteUInt16(values[i]);
+                    byteWriter.Write(values[i]);
                 }
 
-                await writer.StoreAsync();
+                await sendMessage(MSP_Op.SetRawRCChannels, stream.ToArray());
+                await getRCState();
             });
         }
 
-        private void setChannel(Channels channel, float value)
+        private void setChannel(Channels channel, double value)
         {
-            float f = (value * (float)(kStickMax - kStickMin));
+            double f = (value * (double)(kStickMax - kStickMin));
             UInt16 val = (UInt16)(f + kStickMin);
 
-            setChannel(channel, value);
+            setChannel(channel, val);
         }
 
         private const byte MspPayloadSize = 255;
@@ -226,9 +308,8 @@ namespace UwpDrone
             Task t = Task.Run(async () =>
             {
                 byte[] payload = new byte[MspPayloadSize];
-                uint offset = 0;
                 ReadState readState = ReadState.Idle;
-                MessageDirection direction = MessageDirection.Inbound;
+                //MessageDirection direction = MessageDirection.Inbound;
                 byte checksum = 0;
                 byte messageLengthExpectation = 0;
                 byte messageIndex = 0;
@@ -268,22 +349,23 @@ namespace UwpDrone
                         case ReadState.Direction:
                             if (readByte == Convert.ToByte('>'))
                             {
-                                direction = MessageDirection.Inbound;
+                                //direction = MessageDirection.Inbound;
                             }
                             else if (readByte == Convert.ToByte('<'))
                             {
-                                direction = MessageDirection.Outbound;
+                                //direction = MessageDirection.Outbound;
                             }
                             else if (readByte == Convert.ToByte('!'))
                             {
-                                Debug.WriteLine("Flight controlle reports an unsupported command");
-                                readState = ReadState.Idle;
+                                Debug.WriteLine("Flight controller reports an unsupported command");
                             }
                             else
                             {
-                                Debug.WriteLine("Unknown token reading Direction");
-                                readState = ReadState.Idle;
+                                Debug.WriteLine("Unknown token reading Direction - " + readByte.ToString("x"));
                             }
+
+                            // Advance anyway;
+                            readState = ReadState.Length;
                             break;
 
                         case ReadState.Length:
@@ -318,13 +400,11 @@ namespace UwpDrone
 
                         case ReadState.ProcessPayload:
                             processMessage(opcode, payload, messageLengthExpectation);
-
+                            readState = ReadState.Idle;
+                            opcode = MSP_Op.None;
+                            messageIndex = 0;
                             break;
-
-
                     }
-                    payload[offset] = reader.ReadByte();
-
                 }
             });
         }
@@ -344,8 +424,15 @@ namespace UwpDrone
 
         void processMessage(MSP_Op code, byte[] bytes, byte length)
         {
+            Debug.WriteLine("message received: " + code.ToString());
+
             switch (code)
             {
+                case MSP_Op.Identify:
+                    {
+                        Debug.WriteLine("Received Identity if you care");
+                    }
+                    break;
                 case MSP_Op.RawIMU:
                     {
                         imu.accelerometer.X = BitConverter.ToInt16(bytes, 0) / 512.0f;
@@ -391,6 +478,8 @@ namespace UwpDrone
                         {
                             receiver[Channels.Arm] = BitConverter.ToUInt16(bytes, 8);
                         }
+
+                        ChannelDelegate?.Invoke();
                     }
                     break;
             }
