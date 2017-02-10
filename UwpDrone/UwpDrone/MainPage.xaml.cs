@@ -75,10 +75,13 @@ namespace UwpDrone
                 return;
             }
 
-            GamepadReading reading = _controller.GetCurrentReading();
+            var reading = _controller.GetCurrentReading();
+
+            var reading2 = Gamepad.Gamepads.First().GetCurrentReading();
 
             if (reading.Buttons.HasFlag(GamepadButtons.A))
             {
+                Debug.WriteLine("Toggle Arming");
                 _msp.ToggleArm();
             }
         }
@@ -95,7 +98,7 @@ namespace UwpDrone
         {
             if (_controller == null)
             {
-                _controller = e;
+                _controller = Gamepad.Gamepads.First();
             }
         }
 

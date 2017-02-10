@@ -328,9 +328,13 @@ namespace UwpDrone
             Task t = Task.Run(async () =>
             {
                 receiver[channel] = value;
-
                 MemoryStream stream = new MemoryStream();
                 BinaryWriter byteWriter = new BinaryWriter(stream);
+               -riter.WriteByte(36);
+                writer.WriteByte(77);
+                writer.WriteByte(60);
+                writer.WriteByte(2);
+                writer.WriteByte((byte)MSP_Op.RC);
 
                 var values = receiver.Values.ToArray();
 

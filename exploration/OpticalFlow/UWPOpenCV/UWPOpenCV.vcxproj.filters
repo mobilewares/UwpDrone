@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>eb629cc4-5e98-4270-a717-1baef270d6df</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="OpticalFlow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="OpticalFlow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_core320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_features2d320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_flann320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_highgui320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_imgcodecs320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_imgproc320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_ml320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_objdetect320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_photo320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_shape320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_stitching320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_videoio320$(DebugSuffix).dll" />
+    <None Include="..\..\..\..\opencv\bin\WS\10.0.14393.0\$(Platform)\bin\$(Configuration)\opencv_videostab320$(DebugSuffix).dll" />
+  </ItemGroup>
+</Project>
