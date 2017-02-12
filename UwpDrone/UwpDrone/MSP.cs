@@ -211,7 +211,58 @@ namespace UwpDrone
             set
             {
 
-                setChannel(Channels.Throttle, value);
+                setThrottleChannel(Channels.Throttle, value);
+            }
+        }
+
+        public double Yaw
+        {
+            get
+            {
+                var rawYaw = receiver[Channels.Yaw];
+                double yaw = (rawYaw - kStickMin) / (double)(kStickMax - kStickMin);
+
+                return yaw;
+            }
+
+            set
+            {
+
+                setChannel(Channels.Yaw, value);
+            }
+        }
+
+        public double Roll
+        {
+            get
+            {
+                var rawRoll = receiver[Channels.Roll];
+                double roll = (rawRoll - kStickMin) / (double)(kStickMax - kStickMin);
+
+                return roll;
+            }
+
+            set
+            {
+
+                setChannel(Channels.Roll, value);
+            }
+        }
+
+        public double Pitch
+        {
+            get
+            {
+                var rawPitch = receiver[Channels.Pitch];
+                double pitch = (rawPitch - kStickMin) / (double)(kStickMax - kStickMin);
+
+                return pitch;
+            }
+
+            set
+            {
+
+                setChannel(Channels.Pitch, value);
             }
         }
 
@@ -293,11 +344,27 @@ namespace UwpDrone
             });
         }
 
-        private void setChannel(Channels channel, double value)
+        private void setThrottleChannel(Channels channel, double value)
         {
             double f = (value * (double)(kStickMax - kStickMin));
             UInt16 val = (UInt16)(f + kStickMin);
 
+            setChannel(channel, val);
+        }
+
+        private void setChannel(Channels channel, double value)
+        {
+            UInt16 val;
+            if (value < 0.0)
+            {
+                double f = (value * (double)(kStickMid - kStickMin)) + kStickMid;
+                val = (UInt16)(Math.Abs(f));
+            }
+            else
+            {
+                double f = (value * (double)(kStickMax - kStickMid));
+                val = (UInt16)(f + kStickMid);
+            }
             setChannel(channel, val);
         }
 
@@ -307,10 +374,14 @@ namespace UwpDrone
         {
             Task t = Task.Run(async () =>
             {
+                byte[] messagehistory = new byte[1024000];
+                ReadState[] statehistory = new ReadState[1024000];
+                uint messagehistoryindex = 0;
                 byte[] payload = new byte[MspPayloadSize];
                 ReadState readState = ReadState.Idle;
                 //MessageDirection direction = MessageDirection.Inbound;
                 byte checksum = 0;
+                byte specifiedChecksum = 0;
                 byte messageLengthExpectation = 0;
                 byte messageIndex = 0;
 
@@ -320,17 +391,16 @@ namespace UwpDrone
                 {
                     var result = await reader.LoadAsync(1);
                     byte readByte = reader.ReadByte();
+                    messagehistory[messagehistoryindex] = readByte;
+                    statehistory[messagehistoryindex] = readState;
+                    messagehistoryindex++;
+
                     switch (readState)
                     {
                         case ReadState.Idle:
                             if (readByte == Convert.ToByte('$'))
                             {
                                 readState = ReadState.Preamble;
-                            }
-                            else
-                            {
-                                Debug.WriteLine("Unknown Token reading Direction");
-                                readState = ReadState.Idle;
                             }
                             break;
 
@@ -341,7 +411,6 @@ namespace UwpDrone
                             }
                             else
                             {
-                                Debug.WriteLine("Unknown token reading Preamble");
                                 readState = ReadState.Idle;
                             }
                             break;
@@ -399,6 +468,11 @@ namespace UwpDrone
                             break;
 
                         case ReadState.ProcessPayload:
+                            specifiedChecksum = readByte;
+                            if (specifiedChecksum != checksum)
+                            {
+                                Debug.WriteLine("Checksum failed: Seen " + checksum.ToString() + "but expected " + specifiedChecksum.ToString());
+                            }
                             processMessage(opcode, payload, messageLengthExpectation);
                             readState = ReadState.Idle;
                             opcode = MSP_Op.None;

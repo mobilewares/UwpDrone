@@ -51,10 +51,20 @@ namespace UwpDrone
         {
             var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
+                if (_msp.receiver[MSP.Channels.Throttle] < 800)
+                {
+                    Debug.WriteLine("throttle bad");
+                }
                 ArmProgress.Value = _msp.receiver[MSP.Channels.Arm];
                 ArmValue.Text = ArmProgress.Value.ToString();
                 ThrottleProgress.Value = _msp.receiver[MSP.Channels.Throttle];
                 ThrottleValue.Text = ThrottleProgress.Value.ToString();
+                RollProgress.Value = _msp.receiver[MSP.Channels.Roll];
+                RollValue.Text = RollProgress.Value.ToString();
+                PitchProgress.Value = _msp.receiver[MSP.Channels.Pitch];
+                PitchValue.Text = PitchProgress.Value.ToString();
+                YawProgress.Value = _msp.receiver[MSP.Channels.Yaw];
+                YawValue.Text = YawProgress.Value.ToString();
             });
         }
 
@@ -122,12 +132,17 @@ namespace UwpDrone
 
                 _msp.Throttle = throttle;
             }
+
+            _msp.Yaw = x;
         }
 
         private void VirtualJoystick_RightStickMove(object sender, EventArgs e)
         {
-            //AngleCurr.Text = "Angle : " + Joystick.Angle.ToString();
-            //DistCurr.Text = "Distance : " + Joystick.Distance.ToString();
+            double x = XFromJoystick(JoystickRight);
+            double y = YFromJoystick(JoystickRight);
+
+            _msp.Roll = x;
+            _msp.Pitch = y;
         }
 
         private void Joystick_Loaded(object sender, RoutedEventArgs e)
