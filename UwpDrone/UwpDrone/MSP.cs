@@ -118,7 +118,7 @@ namespace UwpDrone
             receiver[Channels.Aux4] = kStickMid;
         }
 
-        public async Task connect(string identifyingSubStr = "VID_10C4") //USB\VID_10C4&PID_EA60
+        public async Task connect(string identifyingSubStr = "UART0")
         {
             string selector = SerialDevice.GetDeviceSelector();
             var deviceCollection = await DeviceInformation.FindAllAsync(selector);
@@ -140,8 +140,7 @@ namespace UwpDrone
                         _device.Handshake = SerialHandshake.None;
                         _device.ReadTimeout = TimeSpan.FromSeconds(5);
                         _device.WriteTimeout = TimeSpan.FromSeconds(5);
-                        _device.Handshake = SerialHandshake.XOnXOff;
-                        //_device.IsDataTerminalReadyEnabled = true;
+
                         writer = new DataWriter(_device.OutputStream);
                         reader = new DataReader(_device.InputStream);
                         reader.InputStreamOptions = InputStreamOptions.Partial;
@@ -330,7 +329,7 @@ namespace UwpDrone
                 receiver[channel] = value;
                 MemoryStream stream = new MemoryStream();
                 BinaryWriter byteWriter = new BinaryWriter(stream);
-               -riter.WriteByte(36);
+                writer.WriteByte(36);
                 writer.WriteByte(77);
                 writer.WriteByte(60);
                 writer.WriteByte(2);
