@@ -5,44 +5,47 @@
     xmlns:local="using:UwpDrone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:VirtualJoystick="using:VirtualJoystick"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
+            <!-- StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Roll</TextBlock>
-                <ProgressBar Name="RollProgress" Width="300" Height="20" Minimum="800" Maximum="2000"></ProgressBar>
                 <TextBlock Name="RollValue" Margin="5"></TextBlock>
-            </StackPanel>
+            </>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Pitch</TextBlock>
-                <ProgressBar Name="PitchProgress" Width="300" Height="20"  Minimum="800" Maximum="2000"></ProgressBar>
                 <TextBlock Name="PitchValue" Margin="5"></TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Yaw</TextBlock>
-                <ProgressBar Name="YawProgress" Width="300" Height="20" Minimum="800" Maximum="2000"></ProgressBar>
                 <TextBlock Name="YawValue" Margin="5"></TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Throttle</TextBlock>
-                <ProgressBar Name="ThrottleProgress" Width="300" Height="20" Minimum="800" Maximum="2000"></ProgressBar>
                 <TextBlock Name="ThrottleValue" Margin="5"></TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Arm</TextBlock>
-                <ProgressBar Margin="5" Name="ArmProgress" Width="300" Height="20" Minimum="800" Maximum="2000"></ProgressBar>
                 <TextBlock Name="ArmValue" Margin="5">Value</TextBlock>
-                <Button x:Name="ArmButton" Content="Arm" Click="ArmButton_Click"/>
+            </StackPanel -->
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Altitude</TextBlock>
+                <TextBlock Name="AltValue" Margin="5"></TextBlock>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center" Height="468" Width="228" Margin="66,86">
-                    <VirtualJoystick:VirtualJoystick Name="JoystickLeft" HorizontalAlignment="Center" Height="400" Width="400" VerticalAlignment="Center" StickMove="VirtualJoystick_LeftStickMove" Loaded="Joystick_Loaded"/>
-                </Viewbox>
-                <Viewbox  HorizontalAlignment="Center" VerticalAlignment="Center" Height="468" Width="228" Margin="66,86">
-                    <VirtualJoystick:VirtualJoystick Name="JoystickRight" HorizontalAlignment="Center" Height="400" Width="400" VerticalAlignment="Center" StickMove="VirtualJoystick_RightStickMove" Loaded="Joystick_Loaded"/>
-                </Viewbox>
+                <TextBlock Margin="5">Battery</TextBlock>
+                <TextBlock Name="BatValue" Margin="5">0</TextBlock>
+                <TextBlock Margin="5">volts</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="Arm" Margin="5" Click="Arm_Click">Arm</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="HoldAt15" Margin="5" Click="HoldAt15_Click">Hold at 15cm</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Name="Land" Margin="5" Click="Land_Click">Land</Button>
             </StackPanel>
         </StackPanel>
 

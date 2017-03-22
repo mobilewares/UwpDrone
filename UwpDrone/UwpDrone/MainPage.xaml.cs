@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using MavLinkUwp;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,8 +25,8 @@ namespace UwpDrone
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        MSP _msp = new MSP();
-        Gamepad _controller;
+        FlightController fc = new FlightController();
+        DroneHttpServer server;
         DispatcherTimer _timer = new DispatcherTimer();
 
         public MainPage()
@@ -37,125 +38,45 @@ namespace UwpDrone
         {
             base.OnNavigatedTo(e);
 
-            await _msp.connect();
-            _msp.ChannelDelegate += _msp_ChannelDelegate;
-            _timer.Interval = TimeSpan.FromMilliseconds(300);
+            //await _msp.connect();
+
+            await fc.initialize();
+
+            server = new DroneHttpServer(3000, fc);
+
+            server.StartServer();
+
+            _timer.Interval = TimeSpan.FromMilliseconds(500);
             _timer.Tick += _timer_Tick;
             _timer.Start();
-            Gamepad.GamepadAdded += Gamepad_GamepadAdded;
-            Gamepad.GamepadRemoved += Gamepad_GamepadRemoved;
-
-        }
-
-        private void _msp_ChannelDelegate()
-        {
-            var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                if (_msp.receiver[MSP.Channels.Throttle] < 800)
-                {
-                    Debug.WriteLine("throttle bad");
-                }
-                ArmProgress.Value = _msp.receiver[MSP.Channels.Arm];
-                ArmValue.Text = ArmProgress.Value.ToString();
-                ThrottleProgress.Value = _msp.receiver[MSP.Channels.Throttle];
-                ThrottleValue.Text = ThrottleProgress.Value.ToString();
-                RollProgress.Value = _msp.receiver[MSP.Channels.Roll];
-                RollValue.Text = RollProgress.Value.ToString();
-                PitchProgress.Value = _msp.receiver[MSP.Channels.Pitch];
-                PitchValue.Text = PitchProgress.Value.ToString();
-                YawProgress.Value = _msp.receiver[MSP.Channels.Yaw];
-                YawValue.Text = YawProgress.Value.ToString();
-            });
         }
 
         private void _timer_Tick(object sender, object e)
         {
-            if (_controller == null)
+            /*
+            var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                return;
-            }
-
-            var reading = _controller.GetCurrentReading();
-
-            var reading2 = Gamepad.Gamepads.First().GetCurrentReading();
-
-            if (reading.Buttons.HasFlag(GamepadButtons.A))
-            {
-                Debug.WriteLine("Toggle Arming");
-                _msp.ToggleArm();
-            }
+                float volt = (float)fc.voltage;
+                volt /= 10.0f;
+                AltValue.Text = fc.Altitude.ToString();
+                BatValue.Text = volt.ToString();
+            });
+            */
         }
 
-        private void Gamepad_GamepadRemoved(object sender, Gamepad e)
+        private void Arm_Click(object sender, RoutedEventArgs e)
         {
-            if (_controller == e)
-            {
-                _controller = null;
-            }
+            fc.ToggleArm();
         }
 
-        private void Gamepad_GamepadAdded(object sender, Gamepad e)
+        private void HoldAt15_Click(object sender, RoutedEventArgs e)
         {
-            if (_controller == null)
-            {
-                _controller = Gamepad.Gamepads.First();
-            }
+            fc.flyToHeight(15);
         }
 
-        private void ArmButton_Click(object sender, RoutedEventArgs e)
+        private void Land_Click(object sender, RoutedEventArgs e)
         {
-            _msp.ToggleArm();
-        }
-
-        double XFromJoystick(VirtualJoystick.VirtualJoystick vj)
-        {
-            double x = Math.Sin(DegToRad(vj.Angle)) * vj.Distance;
-
-            return x;
-        }
-
-        double YFromJoystick(VirtualJoystick.VirtualJoystick vj)
-        {
-            double y = Math.Cos(DegToRad(vj.Angle)) * vj.Distance;
-
-            return y;
-        }
-
-        private void VirtualJoystick_LeftStickMove(object sender, EventArgs e)
-        {
-            double x = XFromJoystick(JoystickLeft);
-            double y = YFromJoystick(JoystickLeft);
-
-            // x is yaw.
-            // y is throttle. Centered is Zero, top is 100%.
-            if (y > -double.Epsilon)
-            {
-                double throttle = y / 100.0;
-                Debug.WriteLine("Throttle: " + throttle.ToString());
-
-                _msp.Throttle = throttle;
-            }
-
-            _msp.Yaw = x;
-        }
-
-        private void VirtualJoystick_RightStickMove(object sender, EventArgs e)
-        {
-            double x = XFromJoystick(JoystickRight);
-            double y = YFromJoystick(JoystickRight);
-
-            _msp.Roll = x;
-            _msp.Pitch = y;
-        }
-
-        private void Joystick_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private double DegToRad(double angle)
-        {
-            return Math.PI * angle / 180.0;
+            fc.land();
         }
     }
 }

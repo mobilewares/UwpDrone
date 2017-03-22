@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Devices.SerialCommunication;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
+
 
 // Implemenation of the MultiWii serial protocol
 // http://www.multiwii.com/wiki/index.php?title=Multiwii_Serial_Protocol
@@ -16,12 +18,42 @@ namespace UwpDrone
 {
     class MSP
     {
+        static string[] laws =
+        {
+            "A drone may not injure a human being or, through inaction, allow a human being to come to harm.",
+            "A drone must obey orders given it by human beings except where such orders would conflict with the First Law.",
+            "A drone must protect its own existence as long as such protection does not conflict with the First or Second Law."
+        };
+        //          - Isaac Asimov
+
         public struct IMU
         {
             public Vector3 accelerometer;
             public Vector3 gyroscope;
             public Vector3 magnetometer;
         };
+        IMU imu;
+
+        public IMU RawIMU
+        {
+            get
+            {
+                return imu;
+            }
+        }
+
+        UInt32 altitude;
+        UInt32 targetAltitude = 0;
+        bool holdingAltitudeChanged = false;
+
+        public UInt32 Altitude
+        {
+            get
+            {
+                return altitude;
+            }
+        }
+        
 
         public enum Channels
         {
@@ -30,18 +62,10 @@ namespace UwpDrone
             Yaw,
             Throttle,
             Arm,
+            Aux1,
             Aux2,
-            Aux3,
             Aux4
         }
-
-        public IMU imu;
-
-        public Dictionary<Channels, UInt16> receiver = new Dictionary<Channels, UInt16>();
-
-        public delegate void RCChannelsUpdatedDelegate();
-
-        public event RCChannelsUpdatedDelegate ChannelDelegate;
 
         private enum MSP_Op : byte
         {
@@ -78,7 +102,7 @@ namespace UwpDrone
 
             // todo: rest of cleanflight extensions.
 
-            VoltMeter = 131,
+            VoltMeter = 128,
             BatteryState = 130,
 
             // original msp commands
@@ -93,29 +117,54 @@ namespace UwpDrone
             Altitude = 109,
 
             SetRawRCChannels = 200,
+            SetAltitude = 246,
         }
         
         private SerialDevice _device;
         private DataWriter writer = null;
         private DataReader reader = null;
 
-        const UInt16 kStickMin = 1000;
-        const UInt16 kStickMid = 1500;
-        const UInt16 kStickMax = 2000;
-        const UInt16 kChannelArmValue = 1500;
-        const UInt16 kChannelDisarmValue = 800;
-        const UInt16 kChannelCount = 8;
+        public const ushort kStickMin = 1000;
+        public const ushort kStickMid = 1500;
+        public const ushort kStickMax = 1900;
+        public const ushort kThrottleMin = 1000;
+        public const ushort kThrottleMax = kStickMax;
+        public const ushort kChannelArmValue = 1500;
+        public const ushort kChannelDisarmValue = 900;
+        public const ushort kChannelHoldValue = 1500;
+        public const ushort kChannelNoHoldValue = 900;
+
+        TimeSpan kHeightCheckFrequency = TimeSpan.FromMilliseconds(20);
+        TimeSpan kIMUCheckFrequency = TimeSpan.FromMilliseconds(20);
+        TimeSpan kRxSendFrequency = TimeSpan.FromMilliseconds(100);
+        TimeSpan kVoltMeterCheckFrequency = TimeSpan.FromMilliseconds(1000);
+
+        // heartbeat
+        public ushort roll { get; set; }  = kStickMid;
+        public ushort pitch { get; set; } = kStickMid;
+        public ushort yaw { get; set; } = kStickMid;
+        public ushort throttle { get; set; } = kThrottleMin;
+        public ushort althold { get; set; } = kChannelNoHoldValue;
+        public ushort aux2 { get; set; } = kStickMid;
+        public ushort arm { get; set; } = kChannelDisarmValue;
+        public ushort aux4 { get; set; } = kStickMid;
+
+        public byte voltage { get; set; } = 0;
+
+        bool sendIdent = true;
+        bool sendVariant = true;
+        bool sendGetRC = false;
 
         public MSP()
         {
-            receiver[Channels.Roll] = kStickMid;
-            receiver[Channels.Pitch] = kStickMid;
-            receiver[Channels.Yaw] = kStickMid;
-            receiver[Channels.Throttle] = kStickMin;
-            receiver[Channels.Arm] = kStickMin;
-            receiver[Channels.Aux2] = kStickMid;
-            receiver[Channels.Aux3] = kStickMid;
-            receiver[Channels.Aux4] = kStickMid;
+        }
+
+        public string[] directives
+        {
+            get
+            {
+                return laws;
+            }
         }
 
         public async Task connect(string identifyingSubStr = "UART0")
@@ -140,22 +189,117 @@ namespace UwpDrone
                         _device.Handshake = SerialHandshake.None;
                         _device.ReadTimeout = TimeSpan.FromSeconds(5);
                         _device.WriteTimeout = TimeSpan.FromSeconds(5);
+                        _device.IsRequestToSendEnabled = false;
+
 
                         writer = new DataWriter(_device.OutputStream);
                         reader = new DataReader(_device.InputStream);
                         reader.InputStreamOptions = InputStreamOptions.Partial;
 
+                        startHeartbeat();
                         startWatchingResponses();
-
-
-                        await sendIdent();
-                        await getRCState();
 
                         return;
                     }
                 }
             }
         }
+
+        private void startHeartbeat()
+        {
+            Task t = Task.Run(async () =>
+            {
+                DateTime lastCheckHeight = DateTime.Now;
+                DateTime lastCheckIMU = DateTime.Now;
+                DateTime lastSendRx = DateTime.Now;
+                DateTime lastCheckVolt = DateTime.Now;
+                while (true)
+                {
+                    if (DateTime.Now - lastSendRx > kRxSendFrequency)
+                    {
+                        MemoryStream stream = new MemoryStream();
+                        using (BinaryWriter byteWriter = new BinaryWriter(stream))
+                        {
+                            byteWriter.Write(roll);
+                            byteWriter.Write(pitch);
+                            byteWriter.Write(throttle);
+                            byteWriter.Write(yaw);
+                            byteWriter.Write(althold);
+                            byteWriter.Write(aux2);
+                            byteWriter.Write(arm);
+                            byteWriter.Write(aux4);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                            byteWriter.Write(kStickMin);
+                        }
+
+                        var payload = stream.ToArray();
+                        await sendMessage(MSP_Op.SetRawRCChannels, payload);
+
+                        lastSendRx = DateTime.Now;
+                    }
+
+                    if (sendIdent)
+                    {
+                        await sendMessage(MSP_Op.Identify);
+                        sendIdent = false;
+                    }
+
+                    if (sendVariant)
+                    {
+                        await sendMessage(MSP_Op.FlightControllerVariant);
+                        sendVariant = false;
+                    }
+
+                    if (sendGetRC)
+                    {
+                        await sendMessage(MSP_Op.RC);
+                        sendGetRC = false;
+                    }
+
+                    if (holdingAltitudeChanged)
+                    {
+                        MemoryStream altStream = new MemoryStream();
+                        using (BinaryWriter byteWriter = new BinaryWriter(altStream))
+                        {
+                            byteWriter.Write(targetAltitude);
+                        }
+
+                        var altPayload = altStream.ToArray();
+                        await sendMessage(MSP_Op.SetAltitude, altPayload);
+                        holdingAltitudeChanged = false;
+                    }
+
+                    if (DateTime.Now - lastCheckHeight > kHeightCheckFrequency)
+                    {
+                        await sendMessage(MSP_Op.Altitude);
+                        lastCheckHeight = DateTime.Now;
+                    }
+
+                    if (DateTime.Now - lastCheckIMU > kIMUCheckFrequency)
+                    {
+                        await sendMessage(MSP_Op.RawIMU);
+                        lastCheckIMU = DateTime.Now;
+                    }
+
+                    if (DateTime.Now - lastCheckVolt > kVoltMeterCheckFrequency)
+                    {
+                        await sendMessage(MSP_Op.VoltMeter);
+                        lastCheckIMU = DateTime.Now;
+                    }
+
+                    await Task.Delay(10);
+                }
+            });
+        }
+
 
         enum ReadState
         {
@@ -177,17 +321,19 @@ namespace UwpDrone
 
         public void Arm()
         {
-            setChannel(Channels.Arm, kChannelArmValue);
+            Debug.WriteLine("S: ARMED");
+            arm = kChannelArmValue;
         }
 
         public void Disarm()
         {
-            setChannel(Channels.Arm, kChannelDisarmValue);
+            Debug.WriteLine("S: DISARMED");
+            arm = kChannelDisarmValue;
         }
 
         public void ToggleArm()
         {
-            if (receiver[Channels.Arm] == kChannelArmValue)
+            if (arm == kChannelArmValue)
             {
                 Disarm();
             }
@@ -201,10 +347,7 @@ namespace UwpDrone
         {
             get
             {
-                var rawThrottle = receiver[Channels.Throttle];
-                double throttle = (rawThrottle - kStickMin) / (double)(kStickMax - kStickMin);
-
-                return throttle;
+                return (throttle - kStickMin) / (double)(kStickMax - kStickMin);
             }
 
             set
@@ -218,10 +361,7 @@ namespace UwpDrone
         {
             get
             {
-                var rawYaw = receiver[Channels.Yaw];
-                double yaw = (rawYaw - kStickMin) / (double)(kStickMax - kStickMin);
-
-                return yaw;
+                return (yaw - kStickMin) / (double)(kStickMax - kStickMin);
             }
 
             set
@@ -235,10 +375,7 @@ namespace UwpDrone
         {
             get
             {
-                var rawRoll = receiver[Channels.Roll];
-                double roll = (rawRoll - kStickMin) / (double)(kStickMax - kStickMin);
-
-                return roll;
+                return (roll - kStickMin) / (double)(kStickMax - kStickMin);
             }
 
             set
@@ -252,10 +389,7 @@ namespace UwpDrone
         {
             get
             {
-                var rawPitch = receiver[Channels.Pitch];
-                double pitch = (rawPitch - kStickMin) / (double)(kStickMax - kStickMin);
-
-                return pitch;
+                return (pitch - kStickMin) / (double)(kStickMax - kStickMin);
             }
 
             set
@@ -265,14 +399,11 @@ namespace UwpDrone
             }
         }
 
-        private async Task sendIdent()
+        public void SetHoldAltitude(UInt32 altHold)
         {
-            await sendMessage(MSP_Op.Identify);
-        }
-
-        private async Task getRCState()
-        {
-            await sendMessage(MSP_Op.RC);
+            targetAltitude = altHold;
+            althold = kChannelHoldValue;
+            holdingAltitudeChanged = true;
         }
 
         private async Task sendMessage(MSP_Op op, byte[] bytes = null)
@@ -324,27 +455,35 @@ namespace UwpDrone
                 return;
             }
 
-            Task t = Task.Run(async () =>
+            switch (channel)
             {
-                receiver[channel] = value;
-                MemoryStream stream = new MemoryStream();
-                BinaryWriter byteWriter = new BinaryWriter(stream);
-                writer.WriteByte(36);
-                writer.WriteByte(77);
-                writer.WriteByte(60);
-                writer.WriteByte(2);
-                writer.WriteByte((byte)MSP_Op.RC);
+                case Channels.Roll:
+                    roll = value;
+                    break;
+                case Channels.Pitch:
+                    pitch = value;
+                    break;
+                case Channels.Yaw:
+                    yaw = value;
+                    break;
+                case Channels.Throttle:
+                    throttle = value;
+                    break;
+                case Channels.Arm:
+                    arm = value;
+                    break;
+                case Channels.Aux1:
+                    althold = value;
+                    break;
+                case Channels.Aux2:
+                    aux2 = value;
+                    break;
+                case Channels.Aux4:
+                    aux4 = value;
+                    break;
+            }
 
-                var values = receiver.Values.ToArray();
-
-                for (UInt16 i = 0; i < kChannelCount; i++)
-                {
-                    byteWriter.Write(values[i]);
-                }
-
-                await sendMessage(MSP_Op.SetRawRCChannels, stream.ToArray());
-                await getRCState();
-            });
+            Debug.WriteLine($"S: {channel.ToString()} - {value}");
         }
 
         private void setThrottleChannel(Channels channel, double value)
@@ -472,11 +611,14 @@ namespace UwpDrone
 
                         case ReadState.ProcessPayload:
                             specifiedChecksum = readByte;
-                            if (specifiedChecksum != checksum)
+                            if (specifiedChecksum == checksum)
                             {
-                                Debug.WriteLine("Checksum failed: Seen " + checksum.ToString() + "but expected " + specifiedChecksum.ToString());
+                                processMessage(opcode, payload, messageLengthExpectation);
                             }
-                            processMessage(opcode, payload, messageLengthExpectation);
+                            else
+                            { 
+                                Debug.WriteLine($"Processing Opcode {opcode} Checksum failed: Seen {checksum} but expected {specifiedChecksum}");
+                            }
                             readState = ReadState.Idle;
                             opcode = MSP_Op.None;
                             messageIndex = 0;
@@ -501,15 +643,54 @@ namespace UwpDrone
 
         void processMessage(MSP_Op code, byte[] bytes, byte length)
         {
-            Debug.WriteLine("message received: " + code.ToString());
+            //Debug.WriteLine("message received: " + code.ToString());
 
             switch (code)
             {
+                case MSP_Op.Status:
+                    {
+                        ushort pidDeltaUs = BitConverter.ToUInt16(bytes, 0);
+                        ushort i2cError = BitConverter.ToUInt16(bytes, 2);
+                        ushort activeSensors = BitConverter.ToUInt16(bytes, 4);
+                        ushort mode = BitConverter.ToUInt16(bytes, 6);
+                        ushort profile = BitConverter.ToUInt16(bytes, 10);
+                        ushort cpuload = BitConverter.ToUInt16(bytes, 11);
+                        ushort gyroDeltaUs = BitConverter.ToUInt16(bytes, 13);
+
+                        if ((mode & 0x1) == 1)
+                        {
+                            if (arm != kChannelArmValue)
+                            {
+                                Debug.WriteLine("Ack! integrity error");
+                            }
+                        }
+                    }
+                    break;
                 case MSP_Op.Identify:
                     {
                         Debug.WriteLine("Received Identity if you care");
                     }
                     break;
+
+                case MSP_Op.VoltMeter:
+                    {
+                        voltage = bytes[0];
+                    }
+                    break;
+
+                case MSP_Op.FlightControllerVariant:
+                    {
+                        StringBuilder builder = new StringBuilder();
+                        ASCIIEncoding ai = new ASCIIEncoding();
+                        for (int i = 0; i < 4; i++)
+                        {
+                            builder.Append(ai.GetString(bytes, i, 1));
+                        }
+
+                        Debug.WriteLine($"Flight Controller ID :{builder.ToString()}");
+                    }
+                    break;
+
                 case MSP_Op.RawIMU:
                     {
                         imu.accelerometer.X = BitConverter.ToInt16(bytes, 0) / 512.0f;
@@ -526,37 +707,56 @@ namespace UwpDrone
                     }
                     break;
 
+                case MSP_Op.Altitude:
+                    {
+                        altitude = BitConverter.ToUInt32(bytes, 0);
+                        BitConverter.ToUInt16(bytes, 4);    // read dead variability
+                    }
+                    break;
+
                 case MSP_Op.RC:
                     {
-                        // I'm sure there is meta, but I'm too tired to think of it.
                         int activeChannels = length / 2;
 
                         if (activeChannels > 0)
                         {
-                            receiver[Channels.Roll] = BitConverter.ToUInt16(bytes, 0);
+                            roll = BitConverter.ToUInt16(bytes, 0);
                         }
 
                         if (activeChannels > 1)
                         {
-                            receiver[Channels.Pitch] = BitConverter.ToUInt16(bytes, 2);
+                            pitch = BitConverter.ToUInt16(bytes, 2);
                         }
 
                         if (activeChannels > 2)
                         {
-                            receiver[Channels.Yaw] = BitConverter.ToUInt16(bytes, 4);
+                            yaw = BitConverter.ToUInt16(bytes, 4);
                         }
 
                         if (activeChannels > 3)
                         {
-                            receiver[Channels.Throttle] = BitConverter.ToUInt16(bytes, 6);
+                            throttle = BitConverter.ToUInt16(bytes, 6);
                         }
 
                         if (activeChannels > 4)
                         {
-                            receiver[Channels.Arm] = BitConverter.ToUInt16(bytes, 8);
+                            althold = BitConverter.ToUInt16(bytes, 8);
                         }
 
-                        ChannelDelegate?.Invoke();
+                        if (activeChannels > 5)
+                        {
+                            aux2 = BitConverter.ToUInt16(bytes, 10);
+                        }
+
+                        if (activeChannels > 6)
+                        {
+                            arm = BitConverter.ToUInt16(bytes, 12);
+                        }
+
+                        if (activeChannels > 7)
+                        {
+                            aux4 = BitConverter.ToUInt16(bytes, 14);
+                        }
                     }
                     break;
             }

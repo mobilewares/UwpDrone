@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<grammar
+  version="1.0" mode="voice" root="commands"
+  xml:lang="en-US" tag-format="semantics/1.0"
+  xmlns="http://www.w3.org/2001/06/grammar">
+    <rule id="commands" scope="public">
+        <item>make the turtle turn</item>
+        <ruleref uri="#direction" />
+        <tag> out.rotation=rules.latest(); </tag>
+    </rule>
+    <rule id="direction">
+        <one-of>
+            <item>
+                <tag>out="left";</tag>
+                <one-of>
+                    <item>left</item>
+                    <item>anticlockwise</item>
+                    <item>banana</item>
+                </one-of>
+            </item>
+            <item>
+                <tag>out="right";</tag>
+                <one-of>
+                    <item>right</item>
+                    <item>clockwise</item>
+                    <item>cheese</item>
+                </one-of>
+            </item>
+        </one-of>
+    </rule>
+</grammar>
