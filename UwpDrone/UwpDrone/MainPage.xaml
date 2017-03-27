@@ -42,6 +42,9 @@
                 <Button Name="Arm" Margin="5" Click="Arm_Click">Arm</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
+                <Button Name="Takeoff" Margin="5" Click="Takeoff_Click">Takeoff</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <Button Name="HoldAt15" Margin="5" Click="HoldAt15_Click">Hold at 15cm</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">

@@ -9,11 +9,19 @@ using MavLinkUwp;
 using Windows.Devices.SerialCommunication;
 using Windows.Devices.Enumeration;
 using Windows.Storage.Streams;
+using Windows.Networking;
+using Windows.Networking.Connectivity;
 
 namespace UwpDrone
 {
     class FlightController
     {
+        struct SupportedPort
+        {
+            public string port;
+            public uint baud;
+        }
+
         UwpMavLink mavLink;
 
         SerialDevice _device;
@@ -27,17 +35,37 @@ namespace UwpDrone
         {
         }
 
-        public async Task initialize()
+        public async Task<bool> initialize()
         {
             await ConnectToController();
 
-            mavLink = new UwpMavLink();
-            mavLink.connectToMavLink(writer, reader);
+            if (writer != null && reader != null)
+            {
+                mavLink = new UwpMavLink();
+                mavLink.connectToMavLink(writer, reader);
+
+                foreach (HostName localHostName in NetworkInformation.GetHostNames())
+                {
+                    if (localHostName.IPInformation != null)
+                    {
+                        if (localHostName.Type == HostNameType.Ipv4)
+                        {
+                            mavLink.proxy(localHostName.ToString(), "10.0.0.165", 14550);
+
+                            break;
+                        }
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         internal async Task ConnectToController()
         {
-            string identifyingSubStr = "VID_26AC";
+            SupportedPort[] supportedPorts = { new SupportedPort { port = "VID_26AC", baud = 115200 } , new SupportedPort { port = "UART0", baud = 460800 } };
             string selector = SerialDevice.GetDeviceSelector();
             var deviceCollection = await DeviceInformation.FindAllAsync(selector);
 
@@ -46,27 +74,30 @@ namespace UwpDrone
 
             for (int i = 0; i < deviceCollection.Count; ++i)
             {
-                if (deviceCollection[i].Name.Contains(identifyingSubStr) || deviceCollection[i].Id.Contains(identifyingSubStr))
+                foreach (var supportedPort in supportedPorts)
                 {
-                    _device = await SerialDevice.FromIdAsync(deviceCollection[i].Id);
-                    if (_device != null)
+                    if (deviceCollection[i].Name.Contains(supportedPort.port) || deviceCollection[i].Id.Contains(supportedPort.port))
                     {
-                        _device.BaudRate = 460800;
-                        _device.Parity = SerialParity.None;
-                        _device.DataBits = 8;
-                        _device.StopBits = SerialStopBitCount.One;
-                        _device.Handshake = SerialHandshake.None;
-                        _device.ReadTimeout = TimeSpan.FromSeconds(5);
-                        _device.WriteTimeout = TimeSpan.FromSeconds(5);
-                        //_device.IsRequestToSendEnabled = false;
-                        //_device.IsDataTerminalReadyEnabled = false;
+                        _device = await SerialDevice.FromIdAsync(deviceCollection[i].Id);
+                        if (_device != null)
+                        {
+                            _device.BaudRate = supportedPort.baud;
+                            _device.Parity = SerialParity.None;
+                            _device.DataBits = 8;
+                            _device.StopBits = SerialStopBitCount.One;
+                            _device.Handshake = SerialHandshake.None;
+                            _device.ReadTimeout = TimeSpan.FromSeconds(5);
+                            _device.WriteTimeout = TimeSpan.FromSeconds(5);
+                            //_device.IsRequestToSendEnabled = false;
+                            //_device.IsDataTerminalReadyEnabled = false;
 
 
-                        writer = new DataWriter(_device.OutputStream);
-                        reader = new DataReader(_device.InputStream);
-                        //reader.InputStreamOptions = InputStreamOptions.Partial;
+                            writer = new DataWriter(_device.OutputStream);
+                            reader = new DataReader(_device.InputStream);
+                            //reader.InputStreamOptions = InputStreamOptions.Partial;
 
-                        return;
+                            return;
+                        }
                     }
                 }
             }
@@ -74,13 +105,19 @@ namespace UwpDrone
 
         public void Arm()
         {
-            mavLink.arm();
-            isArmed = true;
+            if (mavLink != null)
+            {
+                mavLink.arm();
+                isArmed = true;
+            }
         }
 
         public void Disarm()
         {
-            mavLink.disarm();
+            if (mavLink != null)
+            {
+                mavLink.disarm();
+            }
             isArmed = false;
         }
 
@@ -98,17 +135,26 @@ namespace UwpDrone
 
         public void flyToHeight(float heightInCM)
         {
-            mavLink.FlyToHeight(heightInCM);
+            if (mavLink != null)
+            {
+                mavLink.FlyToHeight(heightInCM);
+            }
         }
         
         public void takeoff()
         {
-            mavLink.takeoff(5);
+            if (mavLink != null)
+            {
+                mavLink.takeoff(20);
+            }
         }
 
         public void land()
         {
-            mavLink.land();
+            if (mavLink != null)
+            {
+                mavLink.land();
+            }
         }
     }
 }

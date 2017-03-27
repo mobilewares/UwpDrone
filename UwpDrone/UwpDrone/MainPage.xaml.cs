@@ -71,12 +71,17 @@ namespace UwpDrone
 
         private void HoldAt15_Click(object sender, RoutedEventArgs e)
         {
-            fc.flyToHeight(15);
+            fc.flyToHeight(30);
         }
 
         private void Land_Click(object sender, RoutedEventArgs e)
         {
             fc.land();
+        }
+
+        private void Takeoff_Click(object sender, RoutedEventArgs e)
+        {
+            fc.takeoff();
         }
     }
 }
