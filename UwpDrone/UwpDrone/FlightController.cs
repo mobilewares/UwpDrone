@@ -143,10 +143,7 @@ namespace UwpDrone
         
         public void takeoff()
         {
-            if (mavLink != null)
-            {
-                mavLink.takeoff(20);
-            }
+            mavLink.takeoff(0.5);
         }
 
         public void land()
