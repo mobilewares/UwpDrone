@@ -33,6 +33,7 @@ namespace UwpDrone
 
             mavLink = new UwpMavLink();
             mavLink.connectToMavLink(writer, reader);
+            mavLink.proxy("10.0.1.5", "10.0.1.3", 14550);
         }
 
         internal async Task ConnectToController()
@@ -103,7 +104,7 @@ namespace UwpDrone
         
         public void takeoff()
         {
-            mavLink.takeoff(5);
+            mavLink.takeoff(2);
         }
 
         public void land()
