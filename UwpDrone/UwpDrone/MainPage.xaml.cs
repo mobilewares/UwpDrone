@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using MavLinkUwp;
+using Windows.Devices.Gpio;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -53,15 +55,13 @@ namespace UwpDrone
 
         private void _timer_Tick(object sender, object e)
         {
-            /*
             var ignore = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                float volt = (float)fc.voltage;
-                volt /= 10.0f;
-                AltValue.Text = fc.Altitude.ToString();
-                BatValue.Text = volt.ToString();
+                FrontDistanceValue.Text = fc.Sonar.FrontDistance.ToString();
+                BackDistanceValue.Text = fc.Sonar.BackDistance.ToString();
+                LeftDistanceValue.Text = fc.Sonar.LeftDistance.ToString();
+                RightDistanceValue.Text = fc.Sonar.RightDistance.ToString();
             });
-            */
         }
 
         private void Arm_Click(object sender, RoutedEventArgs e)

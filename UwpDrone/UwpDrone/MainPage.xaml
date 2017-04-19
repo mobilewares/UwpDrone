@@ -50,6 +50,22 @@
             <StackPanel Orientation="Horizontal">
                 <Button Name="Land" Margin="5" Click="Land_Click">Land</Button>
             </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Front Distance:</TextBlock>
+                <TextBlock Name="FrontDistanceValue" Margin="5">front</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Back Distance:</TextBlock>
+                <TextBlock Name="BackDistanceValue" Margin="5">back</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Left Distance:</TextBlock>
+                <TextBlock Name="LeftDistanceValue" Margin="5">left</TextBlock>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Right Distance:</TextBlock>
+                <TextBlock Name="RightDistanceValue" Margin="5">right</TextBlock>
+            </StackPanel>
         </StackPanel>
 
     </Grid>

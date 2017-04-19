@@ -30,6 +30,11 @@ namespace UwpDrone
 
         bool isArmed = false;
 
+        public SonarInTheRound Sonar
+        {
+            get;
+        } = new SonarInTheRound();
+
 
         public FlightController()
         {
@@ -37,7 +42,9 @@ namespace UwpDrone
 
         public async Task<bool> initialize()
         {
+            await Sonar.initialize();
             await ConnectToController();
+
 
             if (writer != null && reader != null)
             {
@@ -143,7 +150,7 @@ namespace UwpDrone
         
         public void takeoff()
         {
-            mavLink.takeoff(0.5);
+            mavLink.takeoff(0.5f);
         }
 
         public void land()
