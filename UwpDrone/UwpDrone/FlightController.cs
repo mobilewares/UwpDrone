@@ -51,19 +51,6 @@ namespace UwpDrone
                 mavLink = new UwpMavLink();
                 mavLink.connectToMavLink(writer, reader);
 
-                foreach (HostName localHostName in NetworkInformation.GetHostNames())
-                {
-                    if (localHostName.IPInformation != null)
-                    {
-                        if (localHostName.Type == HostNameType.Ipv4)
-                        {
-                            mavLink.proxy(localHostName.ToString(), "10.0.0.165", 14550);
-
-                            break;
-                        }
-                    }
-                }
-
                 return true;
             }
 
@@ -108,6 +95,30 @@ namespace UwpDrone
                     }
                 }
             }
+        }
+
+        public void Proxy(string ipToProxyTo)
+        {
+            foreach (HostName localHostName in NetworkInformation.GetHostNames())
+            {
+                if (localHostName.IPInformation != null)
+                {
+                    if (localHostName.Type == HostNameType.Ipv4)
+                    {
+                        try
+                        {
+                            mavLink.proxy(localHostName.ToString(), ipToProxyTo, 14550);
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.WriteLine($"Exception: {e.Message} -\n {e.StackTrace}");
+                        }
+
+                        break;
+                    }
+                }
+            }
+
         }
 
         public void Arm()

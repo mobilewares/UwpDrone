@@ -51,6 +51,11 @@
                 <Button Name="Land" Margin="5" Click="Land_Click">Land</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
+                <TextBlock Margin="5">Proxy:</TextBlock>
+                <TextBox Name="ProxyIp" Margin="5" PlaceholderText="proxy ip" Width="200"></TextBox>
+                <Button Margin="5" Click="Button_Click">Set</Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Margin="5">Front Distance:</TextBlock>
                 <TextBlock Name="FrontDistanceValue" Margin="5">front</TextBlock>
             </StackPanel>

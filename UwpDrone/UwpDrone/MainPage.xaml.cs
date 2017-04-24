@@ -83,5 +83,13 @@ namespace UwpDrone
         {
             fc.takeoff();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(ProxyIp.Text) == false)
+            {
+                fc.Proxy(ProxyIp.Text);
+            }
+        }
     }
 }
