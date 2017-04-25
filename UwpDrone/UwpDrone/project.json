@@ -1,5 +1,7 @@
 ﻿{
   "dependencies": {
+    "MathNet.Filtering": "0.3.0",
+    "MathNet.Filtering.Kalman": "0.3.0",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0"
   },
   "frameworks": {

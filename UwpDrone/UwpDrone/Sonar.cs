@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Gpio;
 using System.Diagnostics;
 using Windows.UI.Xaml;
+using MathNet.Filtering;
 
 namespace UwpDrone
 {
@@ -33,10 +34,16 @@ namespace UwpDrone
         GpioPin echoRightPin;
 
 
-        public double FrontDistance { get; internal set; } = 0.0;
-        public double BackDistance { get; internal set; } = 0.0;
-        public double LeftDistance { get; internal set; } = 0.0;
-        public double RightDistance { get; internal set; } = 0.0;
+        public double FrontDistance;
+        public double BackDistance;
+        public double LeftDistance;
+        public double RightDistance;
+
+        OnlineFilter frontFilter;
+        OnlineFilter backFilter;
+        OnlineFilter leftFilter;
+        OnlineFilter rightFilter;
+
 
         Stopwatch frontTime = new Stopwatch();
         Stopwatch backTime = new Stopwatch();
@@ -60,6 +67,12 @@ namespace UwpDrone
                 // Rogin?
                 return;
             }
+
+            frontFilter = OnlineFilter.CreateDenoise();
+            backFilter = OnlineFilter.CreateDenoise();
+            rightFilter = OnlineFilter.CreateDenoise();
+            leftFilter = OnlineFilter.CreateDenoise();
+
 
             triggerFrontPin = controller.OpenPin(kTriggerFront);
             triggerBackPin = controller.OpenPin(kTriggerBack);
@@ -90,7 +103,10 @@ namespace UwpDrone
             echoLeftPin.ValueChanged += EchoLeftPin_ValueChanged;
             echoRightPin.ValueChanged += EchoRightPin_ValueChanged;
 
-            timer.Interval = TimeSpan.FromMilliseconds(100); // Every greater than 60 ms per datasheet
+            // Every greater than 60 ms per datasheet due to echo.
+            // Round robin, so servicing each sonar every 120ms, but 
+            // allowing for echo by servicing opposite sides.
+            timer.Interval = TimeSpan.FromMilliseconds(30);
             timer.Tick += Timer_Tick;
             timer.Start();
         }
@@ -98,6 +114,7 @@ namespace UwpDrone
         private void Timer_Tick(object sender, object e)
         {
             // 10Us pulse... 
+            // If back collides with left (or front with right), then add an intermediate state.
             if (triggerCount == 0)
             {
                 triggerFrontPin.Write(GpioPinValue.High);
@@ -135,7 +152,7 @@ namespace UwpDrone
             }
             else if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                RightDistance = DistanceFromTime(rightTime);
+                DistanceFromTime(rightTime, rightFilter, out RightDistance);
                 rightTime.Reset();
             }
         }
@@ -149,7 +166,7 @@ namespace UwpDrone
             }
             else if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                LeftDistance = DistanceFromTime(leftTime);
+                DistanceFromTime(leftTime, leftFilter, out LeftDistance);
                 leftTime.Reset();
             }
         }
@@ -163,7 +180,7 @@ namespace UwpDrone
             }
             else if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                BackDistance = DistanceFromTime(backTime);
+                DistanceFromTime(backTime, backFilter, out BackDistance);
 
                 backTime.Reset();
             }
@@ -178,18 +195,19 @@ namespace UwpDrone
             }
             else if (args.Edge == GpioPinEdge.FallingEdge)
             {
-                FrontDistance = DistanceFromTime(frontTime);
+                DistanceFromTime(frontTime, frontFilter, out FrontDistance);
                 frontTime.Reset();
             }
         }
 
-        private double DistanceFromTime(Stopwatch time)
+        private void DistanceFromTime(Stopwatch time, OnlineFilter filter, out double distance)
         {
             // Formula: uS / 58 == centimeters
             double microsecondsPerTick = (1000.0 * 1000.0) / (double)Stopwatch.Frequency;
             double deltaInMicroseconds = (double)time.ElapsedTicks * microsecondsPerTick;
-            double distance = deltaInMicroseconds / 58.0;
-            return distance;
+            double measuredDistance = deltaInMicroseconds / 58.0;
+
+            distance = filter.ProcessSample(measuredDistance);
         }
     }
 }

@@ -30,6 +30,14 @@ namespace UwpDrone
 
         bool isArmed = false;
 
+        DispatcherTimer controlLoopTimer = new DispatcherTimer();
+
+
+        // This flight controller is designed to work in an 8'x8'x12' cage,
+        // ~274x274x365
+        const double kMaxViableSonarPing = 400.0;   // 400cm is beyond the max we should ever see in the cage.
+        const double kMinViableSonarPing = 10.0;   // 10cm is inside the rotors, so bad news if we see this.
+
         public SonarInTheRound Sonar
         {
             get;
@@ -46,15 +54,28 @@ namespace UwpDrone
             await ConnectToController();
 
 
-            if (writer != null && reader != null)
+            if (writer == null || reader == null)
             {
-                mavLink = new UwpMavLink();
-                mavLink.connectToMavLink(writer, reader);
-
-                return true;
+                return false;
             }
 
-            return false;
+
+            mavLink = new UwpMavLink();
+            mavLink.connectToMavLink(writer, reader);
+
+            controlLoopTimer.Interval = TimeSpan.FromMilliseconds(30);
+            controlLoopTimer.Tick += ControlLoopTimer_Tick;
+            controlLoopTimer.Start();
+
+            return true;
+
+        }
+
+        private void ControlLoopTimer_Tick(object sender, object e)
+        {
+            synthesizeGPSPositionFromSonar();
+
+
         }
 
         internal async Task ConnectToController()
@@ -169,6 +190,36 @@ namespace UwpDrone
             if (mavLink != null)
             {
                 mavLink.land();
+            }
+        }
+
+        bool SonarPingIsViable(double distance)
+        {
+            return (distance > kMinViableSonarPing &&
+                distance < kMaxViableSonarPing);
+        }
+
+        internal void synthesizeGPSPositionFromSonar()
+        {
+            if (SonarPingIsViable(Sonar.FrontDistance) &&
+                SonarPingIsViable(Sonar.BackDistance) &&
+                SonarPingIsViable(Sonar.LeftDistance) &&
+                SonarPingIsViable(Sonar.RightDistance))
+            {
+                // Left & back is 'zero'
+
+                double x = Sonar.LeftDistance;
+                double y = Sonar.BackDistance;
+                double alt = mavLink.getAltitude();
+                
+
+                // Might be unstable right as we start, but should stabilize.
+                mavLink.setGPS(0, 0, 0);
+            }
+            else
+            {
+                // TODO: IF we're flying and some time delta
+                // we should land.
             }
         }
     }
