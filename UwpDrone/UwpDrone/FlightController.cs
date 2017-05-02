@@ -36,12 +36,79 @@ namespace UwpDrone
         // This flight controller is designed to work in an 8'x8'x12' cage,
         // ~274x274x365
         const double kMaxViableSonarPing = 400.0;   // 400cm is beyond the max we should ever see in the cage.
-        const double kMinViableSonarPing = 10.0;   // 10cm is inside the rotors, so bad news if we see this.
+        const double kMinViableSonarPing = 0;//10.0;   // 10cm is inside the rotors, so bad news if we see this.
 
         public SonarInTheRound Sonar
         {
             get;
         } = new SonarInTheRound();
+
+        public double Voltage
+        {
+            get
+            {
+                return mavLink.getBatteryVoltage();
+            }
+        }
+
+        public double Altitude
+        {
+            get
+            {
+                return mavLink.getAltitudeLocal();
+            }
+        }
+
+        public double Heading
+        {
+            get
+            {
+                return mavLink.getHeading();
+            }
+        }
+
+        public double XInCM
+        {
+            get
+            {
+                // LocalX is in Meters
+                return mavLink.getLocalX() * 100.0;
+            }
+        }
+
+        public double YInCM
+        {
+            get
+            {
+                // LocalY is in Meters
+                return mavLink.getLocalY() * 100.0;
+            }
+        }
+
+        public double BatteryLevel
+        {
+            get
+            {
+                return mavLink.getBatteryRemaining();
+            }
+        }
+
+        public double Roll
+        {
+            get
+            {
+                return mavLink.getRoll() * 180.0 / Math.PI;
+            }
+        }
+
+        public double Pitch
+        {
+            get
+            {
+                return mavLink.getPitch() * 180.0 / Math.PI;
+            }
+        }
+
 
 
         public FlightController()
@@ -63,7 +130,17 @@ namespace UwpDrone
             mavLink = new UwpMavLink();
             mavLink.connectToMavLink(writer, reader);
 
-            controlLoopTimer.Interval = TimeSpan.FromMilliseconds(30);
+            /*
+            foreach (var i in Enumerable.Range(0, 10 * 50))
+            {
+                // This seems to be the best way to EKF to believe
+                // we're using a different reference poin than the current hilGPS coordinate.
+                synthesizeGPSPositionFromOrigin();
+                await Task.Delay(20);
+            }
+            */
+
+            controlLoopTimer.Interval = TimeSpan.FromMilliseconds(20);
             controlLoopTimer.Tick += ControlLoopTimer_Tick;
             controlLoopTimer.Start();
 
@@ -74,8 +151,6 @@ namespace UwpDrone
         private void ControlLoopTimer_Tick(object sender, object e)
         {
             synthesizeGPSPositionFromSonar();
-
-
         }
 
         internal async Task ConnectToController()
@@ -103,13 +178,10 @@ namespace UwpDrone
                             _device.Handshake = SerialHandshake.None;
                             _device.ReadTimeout = TimeSpan.FromSeconds(5);
                             _device.WriteTimeout = TimeSpan.FromSeconds(5);
-                            //_device.IsRequestToSendEnabled = false;
-                            //_device.IsDataTerminalReadyEnabled = false;
-
 
                             writer = new DataWriter(_device.OutputStream);
                             reader = new DataReader(_device.InputStream);
-                            //reader.InputStreamOptions = InputStreamOptions.Partial;
+                            reader.InputStreamOptions = InputStreamOptions.Partial;
 
                             return;
                         }
@@ -179,10 +251,21 @@ namespace UwpDrone
                 mavLink.FlyToHeight(heightInCM);
             }
         }
-        
-        public void takeoff()
+
+        public void flyForward(double distanceInCM)
         {
-            mavLink.takeoff(0.5f);
+            if (mavLink != null)
+            {
+                // goto is in meters
+                mavLink.Goto((float)distanceInCM / 100.0f, 0, 0);
+            }
+        }
+
+        public async Task takeoff()
+        {
+            // store this away, so we don't rotate to zero later...
+            mavLink.takeoff(0.5);
+            await Task.Delay(1000);
         }
 
         public void land()
@@ -195,8 +278,13 @@ namespace UwpDrone
 
         bool SonarPingIsViable(double distance)
         {
-            return (distance > kMinViableSonarPing &&
-                distance < kMaxViableSonarPing);
+            return (distance >= kMinViableSonarPing &&
+                distance <= kMaxViableSonarPing);
+        }
+
+        internal void synthesizeGPSPositionFromOrigin()
+        {
+            mavLink.setGPS(0, 0, mavLink.getAltitudeLocal());
         }
 
         internal void synthesizeGPSPositionFromSonar()
@@ -210,11 +298,10 @@ namespace UwpDrone
 
                 double x = Sonar.LeftDistance;
                 double y = Sonar.BackDistance;
-                double alt = mavLink.getAltitude();
+                double alt = mavLink.getAltitudeLocal();
                 
 
-                // Might be unstable right as we start, but should stabilize.
-                mavLink.setGPS(0, 0, 0);
+                mavLink.setGPS(x, y, alt);
             }
             else
             {

@@ -1,0 +1,69 @@
+﻿<UserControl
+    x:Class="AwareGroup.IoTDroneDisplay.DroneControls.Controls.RoomMapControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.DroneControls.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="340"
+    d:DesignWidth="240">
+    <UserControl.Resources>
+        <ResourceDictionary Source="..\DroneTheme.xaml"></ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Name="RootGrid" >
+        <Viewbox>
+            <Grid Width="240" Height="340" Background="{StaticResource PanelBackgroundOverlay}">
+                <Grid x:Name="DroneGrid" Width="200" Height="300">
+                    <Image Source="..\Assets\Drone.png" Width="40" Height="60" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                        <Image.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform x:Name="ScaleDrone" CenterX="20" CenterY="40" ScaleX="1" ScaleY="1"></ScaleTransform>
+                                <RotateTransform x:Name="RotateDrone" CenterX="20" CenterY="40" Angle="180"/>
+                                <!-- Rotate Drone -->
+                                <TranslateTransform X="-20" Y="-40"/>
+                                <!-- Center Drone to Point-->
+                                <TranslateTransform x:Name="TranslateDrone" X="0" Y="0"/>
+                                <!-- Move Drone to Point-->
+                            </TransformGroup>
+                        </Image.RenderTransform>
+
+                    </Image>
+                    <!--<Grid x:Name="DroneItem" Width="20" Height="20" Canvas.Left="100" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Black">
+                    <Grid.RenderTransform>
+                        <TransformGroup>
+                            <RotateTransform CenterX="10" CenterY="10" Angle="180"/> -->
+                    <!-- Rotate Drone -->
+                    <!--
+                            <TranslateTransform X="-10" Y="-10"></TranslateTransform> -->
+                    <!-- Center Drone to Point-->
+                    <!--
+                            <TranslateTransform X="100" Y="80"></TranslateTransform> -->
+                    <!-- Move Drone to Point-->
+                    <!--
+                        </TransformGroup>
+                    </Grid.RenderTransform>
+                    <Viewbox>
+                        <Grid Width="30" Height="30">
+                            <Ellipse Stroke="{StaticResource PanelBackgroundWhite}" StrokeThickness="1.5" Width="15" Height="15" Margin="-7.5" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                            <Ellipse Fill="{StaticResource PanelBackgroundWhite}" StrokeThickness="0" Width="4" Height="4" Margin="-2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+                            <Ellipse Stroke="{StaticResource PanelBackgroundWhite}" StrokeThickness="1.5" Width="15" Height="15" Margin="-7.5" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                            <Ellipse Fill="{StaticResource PanelBackgroundWhite}" StrokeThickness="0" Width="4" Height="4" Margin="-2" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+
+                            <Ellipse Stroke="{StaticResource PanelBackgroundWhite}" StrokeThickness="1.5" Width="15" Height="15" Margin="-7.5" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                            <Ellipse Fill="{StaticResource PanelBackgroundWhite}" StrokeThickness="0" Width="4" Height="4" Margin="-2" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+
+                            <Ellipse Stroke="{StaticResource PanelBackgroundWhite}" StrokeThickness="1.5" Width="15" Height="15" Margin="-7.5" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                            <Ellipse Fill="{StaticResource PanelBackgroundWhite}" StrokeThickness="0" Width="4" Height="4" Margin="-2" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+
+                            <Rectangle Fill="White" Height="10" Width="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="-8"/>
+                            
+                        </Grid>
+                    </Viewbox>
+                </Grid>-->
+                </Grid>
+            </Grid>
+        </Viewbox>
+    </Grid>
+</UserControl>

@@ -5,49 +5,34 @@
     xmlns:local="using:UwpDrone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    xmlns:dronectls="using:AwareGroup.IoTDroneDisplay.DroneControls.Controls"
+    mc:Ignorable="d"
+    Loaded="Page_Loaded">
+    <Page.DataContext>
+        <local:DroneControlViewModel/>
+    </Page.DataContext>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Image Name="CameraDisplay" Stretch="UniformToFill"/>
+
+        <dronectls:DroneOverlayControl
+            x:Name="DroneOverlay"
+            Roll="{Binding Roll}"
+            Heading="{Binding Heading}"
+            FeetX="{Binding FeetX}"
+            FeetY="{Binding FeetY}"
+            Title="{Binding Title}"
+            BatteryLevel="{Binding BatteryLevel}"
+            Objective="{Binding Objective}"
+            Status="{Binding Status}"
+            
+            />
+
         <StackPanel>
-            <!-- StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Roll</TextBlock>
-                <TextBlock Name="RollValue" Margin="5"></TextBlock>
-            </>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Pitch</TextBlock>
-                <TextBlock Name="PitchValue" Margin="5"></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Yaw</TextBlock>
-                <TextBlock Name="YawValue" Margin="5"></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Throttle</TextBlock>
-                <TextBlock Name="ThrottleValue" Margin="5"></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Arm</TextBlock>
-                <TextBlock Name="ArmValue" Margin="5">Value</TextBlock>
-            </StackPanel -->
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Altitude</TextBlock>
-                <TextBlock Name="AltValue" Margin="5"></TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Battery</TextBlock>
-                <TextBlock Name="BatValue" Margin="5">0</TextBlock>
-                <TextBlock Margin="5">volts</TextBlock>
-            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Name="Arm" Margin="5" Click="Arm_Click">Arm</Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
                 <Button Name="Takeoff" Margin="5" Click="Takeoff_Click">Takeoff</Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <Button Name="HoldAt15" Margin="5" Click="HoldAt15_Click">Hold at 15cm</Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
                 <Button Name="Land" Margin="5" Click="Land_Click">Land</Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -55,23 +40,6 @@
                 <TextBox Name="ProxyIp" Margin="5" PlaceholderText="proxy ip" Width="200"></TextBox>
                 <Button Margin="5" Click="Button_Click">Set</Button>
             </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Front Distance:</TextBlock>
-                <TextBlock Name="FrontDistanceValue" Margin="5">front</TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Back Distance:</TextBlock>
-                <TextBlock Name="BackDistanceValue" Margin="5">back</TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Left Distance:</TextBlock>
-                <TextBlock Name="LeftDistanceValue" Margin="5">left</TextBlock>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="5">Right Distance:</TextBlock>
-                <TextBlock Name="RightDistanceValue" Margin="5">right</TextBlock>
-            </StackPanel>
         </StackPanel>
-
     </Grid>
 </Page>

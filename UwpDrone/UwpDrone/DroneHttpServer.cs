@@ -143,7 +143,7 @@ namespace UwpDrone
                         }
                     case "takeoff":
                         {
-                            fc.takeoff();
+                            await fc.takeoff();
                             await WriteResponseAsync("200 OK", successMsg, outstream);
                             break;
                         }

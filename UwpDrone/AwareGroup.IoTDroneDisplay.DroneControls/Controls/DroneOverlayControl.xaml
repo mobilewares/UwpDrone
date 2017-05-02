@@ -1,0 +1,55 @@
+﻿<UserControl
+    x:Class="AwareGroup.IoTDroneDisplay.DroneControls.Controls.DroneOverlayControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.DroneControls.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="768"
+    d:DesignWidth="1024">
+    <UserControl.Resources>
+        <ResourceDictionary Source="..\DroneTheme.xaml"></ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+
+        <!-- Content that is Center Aligned -->
+        <Viewbox VerticalAlignment="Stretch" HorizontalAlignment="Center" IsHitTestVisible="False">
+            <Grid Width="500" Height="768">
+                <local:CrossHairControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" />
+                <local:MissionStatusControl x:Name="DroneMissionStatus" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50" 
+                                                />
+            </Grid>
+        </Viewbox>
+
+        <!-- Content that is Left Aligned -->
+        <Viewbox VerticalAlignment="Stretch" HorizontalAlignment="Left">
+            <Grid Height="768">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="30"/>
+                </Grid.RowDefinitions>
+                <local:TitlePanelControl x:Name="DroneTitlePanel" Grid.Row="1" Grid.Column="1" Width="560" HorizontalAlignment="Left" VerticalAlignment="Top" 
+                                             />
+                <local:MissionObjectiveControl x:Name="DroneMissionObjective" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                             />
+            </Grid>
+        </Viewbox>
+
+        <!-- Content that is Right Aligned -->
+        <Viewbox VerticalAlignment="Stretch" HorizontalAlignment="Right" IsHitTestVisible="False">
+            <Grid Height="768">
+                <local:RoomMapControl x:Name="DroneRoomMap" Width="200" Height="300" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="40,20" 
+                                          />
+                <local:GimbalControl x:Name="DroneGimbalControl" Width="200" Height="200" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="40,20" 
+                                          />
+            </Grid>
+        </Viewbox>
+    </Grid>
+</UserControl>

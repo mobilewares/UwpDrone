@@ -13,16 +13,16 @@ namespace UwpDrone
     public class SonarInTheRound
     {
         // Trigger Pins
-        const int kTriggerFront = 16;
+        const int kTriggerFront = 5;
         const int kTriggerBack = 15;
         const int kTriggerLeft = 14;
-        const int kTriggerRight = 5;
+        const int kTriggerRight = 16;
 
         // Echo Pins
-        const int kEchoFront = 6;
+        const int kEchoFront = 17;
         const int kEchoBack = 4;
         const int kEchoLeft = 7;
-        const int kEchoRight = 17;
+        const int kEchoRight = 6;
 
         GpioPin triggerFrontPin;
         GpioPin triggerBackPin;
@@ -34,10 +34,10 @@ namespace UwpDrone
         GpioPin echoRightPin;
 
 
-        public double FrontDistance;
-        public double BackDistance;
-        public double LeftDistance;
-        public double RightDistance;
+        public double FrontDistance = 0.0;
+        public double BackDistance = 0.0;
+        public double LeftDistance = 0.0;
+        public double RightDistance = 0.0;
 
         OnlineFilter frontFilter;
         OnlineFilter backFilter;

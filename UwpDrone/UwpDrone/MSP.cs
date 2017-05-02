@@ -18,14 +18,6 @@ namespace UwpDrone
 {
     class MSP
     {
-        static string[] laws =
-        {
-            "A drone may not injure a human being or, through inaction, allow a human being to come to harm.",
-            "A drone must obey orders given it by human beings except where such orders would conflict with the First Law.",
-            "A drone must protect its own existence as long as such protection does not conflict with the First or Second Law."
-        };
-        //          - Isaac Asimov
-
         public struct IMU
         {
             public Vector3 accelerometer;
@@ -157,14 +149,6 @@ namespace UwpDrone
 
         public MSP()
         {
-        }
-
-        public string[] directives
-        {
-            get
-            {
-                return laws;
-            }
         }
 
         public async Task connect(string identifyingSubStr = "UART0")
