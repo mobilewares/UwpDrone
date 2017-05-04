@@ -21,7 +21,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 {
     public sealed partial class TitlePanelControl : UserControl
     {
-        public event EventHandler PowerButtonClicked;
+        public event EventHandler ButtonClicked;
 
         private const string _batteryImagePath = "ms-appx:///AwareGroup.IoTDroneDisplay.DroneControls/Assets/Battery-{0}.png";
 
@@ -29,17 +29,23 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             InitializeComponent();
             FixValues();
-            PowerButton.Click+= delegate(object sender, RoutedEventArgs args)
-            {
-                if (PowerButtonClicked!=null)
-                    PowerButtonClicked.Invoke(this, new EventArgs());
-            };
+            PowerButton.Click += delegate (object sender, RoutedEventArgs args)
+             {
+                 if (ButtonClicked != null)
+                     ButtonClicked.Invoke(this, null);
+             };
         }
 
         public void FixValues()
         {
-            BatteryLevel = 100.0;
-            Title = "SCANNING";
+            try
+            {
+                BatteryLevel = 100.0;
+                Title = "SCANNING";
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>

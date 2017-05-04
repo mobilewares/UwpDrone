@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="AwareGroup.IoTDroneDisplay.DroneAppExample.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.DroneAppExample"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:dronectls="using:AwareGroup.IoTDroneDisplay.DroneControls.Controls"
+    xmlns:viewModel="using:AwareGroup.IoTDroneDisplay.DroneAppExample.ViewModel"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModel:DroneControlViewModel/>
+    </Page.DataContext>
+    
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        
+        <!-- This is where the Background Video/MediaElement would be hosted --> 
+        <Image Source="Assets/map_for_projector.png" Stretch="UniformToFill"/>
+        
+        <!-- This Control Overlays Video/Everything - set Margin on this to handle Display Overscan if needed -->
+        <!-- 
+            Expected Values : 
+        
+            Roll: -180.0 .. +180.0 (Degrees not Radians) -  Gimbal
+        
+            Heading: -360.0 .. +360.0 (Degrees not Radians)  - Room Map
+            Feet X: 0.0 .. 8.0 (Feet)  - Room Map
+            Feet Y: 0.0 .. 12.0 (Feet)  - Room Map
+        
+            Title: Top Title
+            Objective : Shows current overall mission objective (Top Left under Title)
+            Status : Shows current In Mission Status (Hides itself if blank string)
+        
+            BatteryLevel : 0..100 (Selects appropriate icon in Title Area).
+        
+            //Events
+            PowerButtonClick - Raised when Power Button is Clicked.
+        
+        -->
+        <dronectls:DroneOverlayControl
+            x:Name="DroneOverlay"
+            Roll="{Binding Roll}"
+            Heading="{Binding Heading}"
+            Altitude="{Binding Altitude}"
+            Pitch="{Binding Pitch}"
+            X="{Binding X}"
+            Y="{Binding Y}"
+            Title="{Binding Title}"
+            BatteryLevel="{Binding BatteryLevel}"
+            Objective="{Binding Objective}"
+            Status="{Binding Status}"
+            />
+    </Grid>
+</Page>

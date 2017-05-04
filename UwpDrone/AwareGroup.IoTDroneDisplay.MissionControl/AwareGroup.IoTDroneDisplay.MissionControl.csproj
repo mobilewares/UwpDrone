@@ -3,12 +3,12 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C19B0A1-2AD9-42B5-9139-18CE2FC29C62}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{95130490-644C-44AE-BA05-141378BBA84A}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AwareGroup.IoTDroneDisplay.DroneControls</RootNamespace>
-    <AssemblyName>AwareGroup.IoTDroneDisplay.DroneControls</AssemblyName>
+    <RootNamespace>AwareGroup.IoTDroneDisplay.MissionControl</RootNamespace>
+    <AssemblyName>AwareGroup.IoTDroneDisplay.MissionControl</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.14393.0</TargetPlatformVersion>
@@ -16,28 +16,10 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <PackageCertificateKeyFile>AwareGroup.IoTDroneDisplay.MissionControl_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -46,9 +28,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <PlatformTarget>x86</PlatformTarget>
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -57,9 +39,10 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
-    <PlatformTarget>ARM</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\ARM\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -68,9 +51,9 @@
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
-    <PlatformTarget>ARM</PlatformTarget>
     <OutputPath>bin\ARM\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -79,9 +62,10 @@
     <PlatformTarget>ARM</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
@@ -90,9 +74,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Release\</OutputPath>
     <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
     <Optimize>true</Optimize>
@@ -101,89 +85,106 @@
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <EmbeddedResource Include="Missions\Missions.json" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Common\ApplicationSettings.cs" />
     <Compile Include="Common\Bindable.cs" />
-    <Compile Include="Class1.cs" />
-    <Compile Include="Common\Utils.cs" />
-    <Compile Include="Controls\CrossHairControl.xaml.cs">
-      <DependentUpon>CrossHairControl.xaml</DependentUpon>
+    <Compile Include="Common\Converters.cs" />
+    <Compile Include="Controls\AppSettings.xaml.cs">
+      <DependentUpon>AppSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DroneOverlayControl.xaml.cs">
-      <DependentUpon>DroneOverlayControl.xaml</DependentUpon>
+    <Compile Include="Controls\MissionSelectControl.xaml.cs">
+      <DependentUpon>MissionSelectControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\GimbalControl.xaml.cs">
-      <DependentUpon>GimbalControl.xaml</DependentUpon>
+    <Compile Include="Controls\SelectDevice.xaml.cs">
+      <DependentUpon>SelectDevice.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MissionObjectiveControl.xaml.cs">
-      <DependentUpon>MissionObjectiveControl.xaml</DependentUpon>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MissionStatusControl.xaml.cs">
-      <DependentUpon>MissionStatusControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\RoomMapControl.xaml.cs">
-      <DependentUpon>RoomMapControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\TitlePanelControl.xaml.cs">
-      <DependentUpon>TitlePanelControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Model\DroneState.cs" />
+    <Compile Include="Model\ClientMode.cs" />
+    <Compile Include="Model\DroneMission.cs" />
+    <Compile Include="Model\MissionLogItem.cs" />
+    <Compile Include="Model\NanoInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Properties\AwareGroup.IotDroneDisplay.DroneControls.rd.xml" />
+    <Compile Include="Services\AppSettingsService.cs" />
+    <Compile Include="Services\DroneHttpClient.cs" />
+    <Compile Include="Services\DroneMissionService.cs" />
+    <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\SelectDeviceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\CrossHairControl.xaml">
+    <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\DroneOverlayControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GimbalControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MissionObjectiveControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MissionStatusControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\RoomMapControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\TitlePanelControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DroneTheme.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
+    </AppxManifest>
+    <None Include="AwareGroup.IoTDroneDisplay.MissionControl_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Battery-00.png" />
-    <Content Include="Assets\Battery-100.png" />
-    <Content Include="Assets\Battery-20.png" />
-    <Content Include="Assets\Battery-40.png" />
-    <Content Include="Assets\Battery-60.png" />
-    <Content Include="Assets\Battery-80.png" />
-    <Content Include="Assets\Drone.png" />
-    <Content Include="Assets\focal_point.png" />
-    <Content Include="Assets\video_crosshair_glow.png" />
-    <Content Include="Assets\video_crosshair.png" />
-    <Content Include="Assets\gauge_background.png" />
-    <Content Include="Assets\gauge_crosshair.png" />
+    <Content Include="Images\icon_eye.png" />
+    <Content Include="Images\icon_eye_low.png" />
+    <Content Include="Images\icon_eye_reflection.png" />
+    <Content Include="Images\icon_location.png" />
+    <Content Include="Images\icon_location_reflection.png" />
+    <Content Include="Images\icon_target.png" />
+    <Content Include="Images\icon_target_reflection.png" />
+    <Content Include="Images\mission1pic.png" />
+    <Content Include="Images\shadow.png" />
+    <Content Include="Missions\Images\Icon1.png" />
+    <Content Include="Missions\Images\IconReflection1.png" />
+    <Content Include="Missions\Images\Icon2.png" />
+    <Content Include="Missions\Images\IconReflection2.png" />
+    <Content Include="Missions\Images\Icon3.png" />
+    <Content Include="Missions\Images\IconReflection3.png" />
+    <Content Include="Missions\Images\Mission3.png" />
+    <Content Include="Missions\Images\Mission2.png" />
+    <Content Include="Missions\Images\Mission1.png" />
+    <Content Include="Properties\Default.rd.xml" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="..\AwareGroup.IoTDroneDisplay.DroneControls\DroneTheme.xaml">
+      <Link>DroneTheme.xaml</Link>
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\AppSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MissionSelectControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SelectDevice.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

@@ -13,6 +13,6 @@
     </UserControl.Resources>
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
            <!--<Image Source="..\Assets\video_crosshair.png" Width="247" Height="85" Stretch="UniformToFill"/>-->
-        <Image Source="..\Assets\video_crosshair_glow.png" Width="263" Height="98" Stretch="UniformToFill"/>
+        <Image Source="..\Assets\focal_point.png" Width="130" Height="130" Stretch="UniformToFill"/>
     </Grid>
 </UserControl>

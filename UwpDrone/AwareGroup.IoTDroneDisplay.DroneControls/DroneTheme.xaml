@@ -47,8 +47,8 @@
     <SolidColorBrush x:Key="RadioButtonOnForeground" Color="{StaticResource PrimaryAccentColorDark}"/>
     <SolidColorBrush x:Key="RadioButtonOnBackground" Color="{StaticResource PrimaryAccentColorLight}"/>
 
-    <SolidColorBrush x:Key="ButtonActionForeground" Color="{StaticResource ButtonBackgroundColor}"/>
-    <SolidColorBrush x:Key="ButtonActionBackground" Color="{StaticResource PrimaryAccentColorLight}"/>
+    <SolidColorBrush x:Key="ButtonActionBackground" Color="{StaticResource ButtonBackgroundColor}"/>
+    <SolidColorBrush x:Key="ButtonActionForeground" Color="{StaticResource PrimaryAccentColorLight}"/>
 
 
     <Style x:Key="MissionTitleTextStyle" TargetType="TextBlock">

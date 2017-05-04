@@ -1,0 +1,33 @@
+﻿<ContentDialog
+    x:Class="AwareGroup.IoTDroneDisplay.MissionControl.Controls.SelectDevice"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.MissionControl.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:AwareGroup.IoTDroneDisplay.MissionControl.ViewModel"
+    mc:Ignorable="d"
+    Title="SELECT REMOTE VEHICLE"
+    RequestedTheme="Dark"
+    PrimaryButtonText="Connect"
+    SecondaryButtonText="Cancel"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    >
+    <Grid d:DataContext="{Binding Source={d:DesignInstance Type=viewmodels:SelectDeviceViewModel}}">
+        <ListView Margin="0,20" Height="300" Width="400" Background="#22FFFFFF" SelectionMode="Single" ItemsSource="{Binding NanoServerInstances}" SelectedItem="{Binding SelectedInstance, Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5,0,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource MissionObjectiveTextStyle}" Foreground="{StaticResource TextColorHighlight}" Text="{Binding Name}" Padding="0,3"/>
+                        <TextBlock Style="{StaticResource MissionObjectiveTextStyle}" FontSize="20" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}" Text="{Binding IpAddress}" Padding="0" Grid.Row="1"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentDialog>

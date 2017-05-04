@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UwpDrone", "UwpDrone\UwpDrone.csproj", "{A8A98A25-553B-4896-B25D-7624BB3B99F1}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -19,6 +19,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MavLinkCom", "..\..\AirSim\MavLinkCom\MavLinkCom.vcxproj", "{8510C7A4-BF63-41D2-94F6-D8731D137A5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwareGroup.IoTDroneDisplay.DroneControls", "AwareGroup.IoTDroneDisplay.DroneControls\AwareGroup.IoTDroneDisplay.DroneControls.csproj", "{4C19B0A1-2AD9-42B5-9139-18CE2FC29C62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwareGroup.IoTDroneDisplay.DroneAppExample", "AwareGroup.IoTDroneDisplay.DroneAppExample\AwareGroup.IoTDroneDisplay.DroneAppExample.csproj", "{D8AF3769-4D13-405D-88E1-0E1C03711114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AwareGroup.IoTDroneDisplay.MissionControl", "AwareGroup.IoTDroneDisplay.MissionControl\AwareGroup.IoTDroneDisplay.MissionControl.csproj", "{95130490-644C-44AE-BA05-141378BBA84A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +118,50 @@ Global
 		{4C19B0A1-2AD9-42B5-9139-18CE2FC29C62}.Release|x64.Build.0 = Release|x64
 		{4C19B0A1-2AD9-42B5-9139-18CE2FC29C62}.Release|x86.ActiveCfg = Release|x86
 		{4C19B0A1-2AD9-42B5-9139-18CE2FC29C62}.Release|x86.Build.0 = Release|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|Any CPU.Build.0 = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|Any CPU.Deploy.0 = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|ARM.ActiveCfg = Debug|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|ARM.Build.0 = Debug|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|ARM.Deploy.0 = Debug|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x64.ActiveCfg = Debug|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x64.Build.0 = Debug|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x64.Deploy.0 = Debug|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x86.ActiveCfg = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x86.Build.0 = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Debug|x86.Deploy.0 = Debug|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|Any CPU.ActiveCfg = Release|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|ARM.ActiveCfg = Release|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|ARM.Build.0 = Release|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|ARM.Deploy.0 = Release|ARM
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x64.ActiveCfg = Release|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x64.Build.0 = Release|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x64.Deploy.0 = Release|x64
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x86.ActiveCfg = Release|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x86.Build.0 = Release|x86
+		{D8AF3769-4D13-405D-88E1-0E1C03711114}.Release|x86.Deploy.0 = Release|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|Any CPU.Build.0 = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|Any CPU.Deploy.0 = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|ARM.ActiveCfg = Debug|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|ARM.Build.0 = Debug|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|ARM.Deploy.0 = Debug|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x64.ActiveCfg = Debug|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x64.Build.0 = Debug|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x64.Deploy.0 = Debug|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x86.ActiveCfg = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x86.Build.0 = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Debug|x86.Deploy.0 = Debug|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|Any CPU.ActiveCfg = Release|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|ARM.ActiveCfg = Release|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|ARM.Build.0 = Release|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|ARM.Deploy.0 = Release|ARM
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x64.ActiveCfg = Release|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x64.Build.0 = Release|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x64.Deploy.0 = Release|x64
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x86.ActiveCfg = Release|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x86.Build.0 = Release|x86
+		{95130490-644C-44AE-BA05-141378BBA84A}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

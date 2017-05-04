@@ -30,15 +30,19 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         const double _heightPixels = 300.0;
         const double _widthFeet = 8.0;
         const double _heightFeet = 12.0;
+
         const double _pixelsPerFeetX = _widthPixels / _widthFeet;
         const double _pixelsPerFeetY = _heightPixels / _heightFeet;
 
+        const double _pixelsPerMeterX = _pixelsPerFeetX / 0.3048;
+        const double _pixelsPerMeterY = _pixelsPerFeetY / 0.3048;
+
         public void FixValues()
-            {
-                Heading = 0.0;
-                X = 0.0;
-                Y = 0.0;
-            }
+        {
+            Heading = 0.0;
+            X = 0.0;
+            Y = 0.0;
+        }
 
         /// <summary>
         /// Rotation Angle (Heading) of the Drone (Clamps to +/- 360.0)
@@ -88,7 +92,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             {
                 var ctl = (RoomMapControl)dependencyObject;
                 double val = (double)dependencyPropertyChangedEventArgs.NewValue;
-                val = (_pixelsPerFeetX * val).Clamp(0, 200.0);
+                val = (_pixelsPerMeterX * val).Clamp(0, 200.0);
                 ctl.TranslateDrone.X = val;
             }
             catch (Exception ex)
@@ -115,7 +119,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             {
                 var ctl = (RoomMapControl)dependencyObject;
                 double val = (double)dependencyPropertyChangedEventArgs.NewValue;
-                val = (val*_pixelsPerFeetY).Clamp(0, 300.0);
+                val = (val * _pixelsPerMeterY).Clamp(0, 300.0);
                 ctl.TranslateDrone.Y = val;
             }
             catch (Exception ex)

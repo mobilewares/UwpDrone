@@ -1,0 +1,44 @@
+﻿<ContentDialog
+    x:Class="AwareGroup.IoTDroneDisplay.MissionControl.Controls.AppSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.MissionControl.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="APP SETTINGS"
+    PrimaryButtonText="Restart"
+    SecondaryButtonText="Done"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    Background="Black"
+    Foreground="{StaticResource TextColorHighlight}"
+    RequestedTheme="Dark"
+    >
+
+    <Grid>
+        <Grid Height="400" Width="350">
+            <StackPanel Margin="0,20">
+                
+                <TextBlock Text="Network Settings" Margin="0,0,0,10" FontWeight="SemiLight"/>
+                <RadioButton Content="UDP Listener" GroupName="Network" FontWeight="SemiBold" IsChecked="True"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Margin="30,0,0,10">
+                    <TextBlock Text="PORT : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox Background="White" Foreground="Black" Width="80" BorderThickness="0" Text="2020" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+                <RadioButton Content="Fixed HTTP Client" GroupName="Network" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
+                    <TextBlock Text="ADDRESS : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox Background="White" Foreground="Black" Width="180" BorderThickness="0" Text="192.168.1.9:8090" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+                <RadioButton Content="Disabled" GroupName="Network" FontWeight="SemiBold"/>
+
+                <TextBlock Text="UI Settings" Margin="0,20,0,10" FontWeight="SemiLight"/>
+                <CheckBox Content="Show Mission Control"/>
+                <CheckBox Content="Show Mission Log"/>
+                <CheckBox Content="Control Projector Output"/>
+
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ContentDialog>

@@ -25,28 +25,35 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public DroneOverlayControl()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             InitializeDefaults();
-            DroneTitlePanel.PowerButtonClicked += DroneTitlePanelOnPowerButtonClicked;
+            DroneTitlePanel.ButtonClicked += DroneTitlePanelOnPowerButtonClicked;
         }
 
         private void DroneTitlePanelOnPowerButtonClicked(object sender, EventArgs eventArgs)
         {
             //Raise Event to the Parent Host.
-            if (PowerButtonClicked!=null)
-                PowerButtonClicked.Invoke(this, new EventArgs());
+            if (PowerButtonClicked != null)
+                PowerButtonClicked.Invoke(this, null);
         }
 
         public void InitializeDefaults()
         {
-            Roll = 0.0;
-            Heading = 0.0;
-            FeetX = 0.0;
-            FeetY = 0.0;
-            Title = "PROJECT ARYA";
-            Status = "";
-            Objective = "Find the Red Ball";
-            BatteryLevel = 50.0;
+            try
+            {
+                Roll = 0.0;
+                Heading = 0.0;
+                X = 0.0;
+                Y = 0.0;
+                Title = "PROJECT ARYA";
+                Status = "";
+                Objective = "Find the Red Ball";
+                BatteryLevel = 50.0;
+                ShowGimbal = true;
+            }
+            catch
+            {
+            }
         }
 
         public static readonly DependencyProperty RollProperty = DependencyProperty.Register(
@@ -54,7 +61,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public double Roll
         {
-            get { return (double) GetValue(RollProperty); }
+            get { return (double)GetValue(RollProperty); }
             set { SetValue(RollProperty, value); }
         }
 
@@ -63,8 +70,8 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                double val = (double) dependencyPropertyChangedEventArgs.NewValue;
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
                 ctl.DroneGimbalControl.Roll = val;
             }
             catch (Exception ex)
@@ -78,7 +85,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public double Heading
         {
-            get { return (double) GetValue(HeadingProperty); }
+            get { return (double)GetValue(HeadingProperty); }
             set { SetValue(HeadingProperty, value); }
         }
 
@@ -87,8 +94,8 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                double val = (double) dependencyPropertyChangedEventArgs.NewValue;
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
                 ctl.DroneRoomMap.Heading = val;
             }
             catch (Exception ex)
@@ -97,13 +104,62 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             }
         }
 
-        public static readonly DependencyProperty FeetXProperty = DependencyProperty.Register(
-            "FeetX", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, FeetXPropertyChangedCallback));
 
-        public double FeetX
+        public static readonly DependencyProperty AltitudeProperty = DependencyProperty.Register(
+            "Altitude", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, AltitudePropertyChangedCallback));
+
+        public double Altitude
         {
-            get { return (double) GetValue(FeetXProperty); }
-            set { SetValue(FeetXProperty, value); }
+            get { return (double)GetValue(AltitudeProperty); }
+            set { SetValue(AltitudeProperty, value); }
+        }
+
+        private static void AltitudePropertyChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            try
+            {
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
+                //ctl.XX = val;
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+            }
+        }
+
+        public static readonly DependencyProperty PitchProperty = DependencyProperty.Register(
+            "Pitch", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, PitchPropertyChangedCallback));
+
+        public double Pitch
+        {
+            get { return (double)GetValue(PitchProperty); }
+            set { SetValue(PitchProperty, value); }
+        }
+
+        private static void PitchPropertyChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            try
+            {
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
+                //ctl.XX = val;
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+            }
+        }
+
+        public static readonly DependencyProperty XProperty = DependencyProperty.Register(
+            "X", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, FeetXPropertyChangedCallback));
+
+        public double X
+        {
+            get { return (double)GetValue(XProperty); }
+            set { SetValue(XProperty, value); }
         }
 
         private static void FeetXPropertyChangedCallback(DependencyObject dependencyObject,
@@ -111,8 +167,8 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                double val = (double) dependencyPropertyChangedEventArgs.NewValue;
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
                 ctl.DroneRoomMap.X = val;
             }
             catch (Exception ex)
@@ -121,13 +177,13 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             }
         }
 
-        public static readonly DependencyProperty FeetYProperty = DependencyProperty.Register(
-            "FeetY", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, FeetYPropertyChangedCallback));
+        public static readonly DependencyProperty YProperty = DependencyProperty.Register(
+            "Y", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(0, FeetYPropertyChangedCallback));
 
-        public double FeetY
+        public double Y
         {
-            get { return (double) GetValue(FeetYProperty); }
-            set { SetValue(FeetYProperty, value); }
+            get { return (double)GetValue(YProperty); }
+            set { SetValue(YProperty, value); }
         }
 
         private static void FeetYPropertyChangedCallback(DependencyObject dependencyObject,
@@ -135,8 +191,8 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                double val = (double) dependencyPropertyChangedEventArgs.NewValue;
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
                 ctl.DroneRoomMap.Y = val;
             }
             catch (Exception ex)
@@ -150,7 +206,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public string Title
         {
-            get { return (string) GetValue(TitleProperty); }
+            get { return (string)GetValue(TitleProperty); }
             set { SetValue(TitleProperty, value); }
         }
 
@@ -159,9 +215,9 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                string val = (string) dependencyPropertyChangedEventArgs.NewValue;
-                ctl.DroneTitlePanel.Title = val??"";
+                var ctl = (DroneOverlayControl)dependencyObject;
+                string val = (string)dependencyPropertyChangedEventArgs.NewValue;
+                ctl.DroneTitlePanel.Title = val ?? "";
             }
             catch (Exception ex)
             {
@@ -174,7 +230,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public string Objective
         {
-            get { return (string) GetValue(ObjectiveProperty); }
+            get { return (string)GetValue(ObjectiveProperty); }
             set { SetValue(ObjectiveProperty, value); }
         }
 
@@ -183,9 +239,9 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                string val = (string) dependencyPropertyChangedEventArgs.NewValue;
-                ctl.DroneMissionObjective.Text = val??"";
+                var ctl = (DroneOverlayControl)dependencyObject;
+                string val = (string)dependencyPropertyChangedEventArgs.NewValue;
+                ctl.DroneMissionObjective.Text = val ?? "";
             }
             catch (Exception ex)
             {
@@ -198,7 +254,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public string Status
         {
-            get { return (string) GetValue(StatusProperty); }
+            get { return (string)GetValue(StatusProperty); }
             set { SetValue(StatusProperty, value); }
         }
 
@@ -207,9 +263,9 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                string val = (string) dependencyPropertyChangedEventArgs.NewValue;
-                ctl.DroneMissionStatus.Text = val??"";
+                var ctl = (DroneOverlayControl)dependencyObject;
+                string val = (string)dependencyPropertyChangedEventArgs.NewValue;
+                ctl.DroneMissionStatus.Text = val ?? "";
                 ctl.DroneMissionStatus.Visibility = ((val ?? "") == "") ? Visibility.Collapsed : Visibility.Visible;
 
             }
@@ -224,7 +280,7 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
 
         public double BatteryLevel
         {
-            get { return (double) GetValue(BatteryLevelProperty); }
+            get { return (double)GetValue(BatteryLevelProperty); }
             set { SetValue(BatteryLevelProperty, value); }
         }
 
@@ -233,8 +289,8 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         {
             try
             {
-                var ctl = (DroneOverlayControl) dependencyObject;
-                double val = (double) dependencyPropertyChangedEventArgs.NewValue;
+                var ctl = (DroneOverlayControl)dependencyObject;
+                double val = (double)dependencyPropertyChangedEventArgs.NewValue;
                 ctl.DroneTitlePanel.BatteryLevel = val;
             }
             catch (Exception ex)
@@ -243,82 +299,30 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             }
         }
 
+        public static readonly DependencyProperty ShowGimbalProperty = DependencyProperty.Register(
+            "ShowGimbal", typeof(bool), typeof(DroneOverlayControl), new PropertyMetadata(true, ShowGimbalPropertyChangedCallback));
 
+        public bool ShowGimbal
+        {
+            get { return (bool) GetValue(ShowGimbalProperty); }
+            set { SetValue(ShowGimbalProperty, value); }
+        }
 
-
-
-
-        //public static readonly DependencyProperty RollProperty = DependencyProperty.Register(
-        //    "Roll", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(default(double)));
-
-        //public static readonly DependencyProperty HeadingProperty = DependencyProperty.Register(
-        //    "Heading", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(default(double)));
-
-        //public static readonly DependencyProperty FeetXProperty = DependencyProperty.Register(
-        //    "FeetX", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(default(double)));
-
-        //public static readonly DependencyProperty FeetYProperty = DependencyProperty.Register(
-        //    "FeetY", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(default(double)));
-
-        //public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
-        //    "Title", typeof(string), typeof(DroneOverlayControl), new PropertyMetadata(default(string)));
-
-        //public static readonly DependencyProperty ObjectiveProperty = DependencyProperty.Register(
-        //    "Objective", typeof(string), typeof(DroneOverlayControl), new PropertyMetadata(default(string)));
-
-        //public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
-        //    "Status", typeof(string), typeof(DroneOverlayControl), new PropertyMetadata(default(string)));
-
-        //public static readonly DependencyProperty BatteryLevelProperty = DependencyProperty.Register(
-        //    "BatteryLevel", typeof(double), typeof(DroneOverlayControl), new PropertyMetadata(default(double)));
-
-        //public double BatteryLevel
-        //{
-        //    get { return (double) GetValue(BatteryLevelProperty); }
-        //    set { SetValue(BatteryLevelProperty, value); }
-        //}
-
-        //public string Status
-        //{
-        //    get { return (string) GetValue(StatusProperty); }
-        //    set { SetValue(StatusProperty, value); }
-        //}
-
-        //public string Objective
-        //{
-        //    get { return (string) GetValue(ObjectiveProperty); }
-        //    set { SetValue(ObjectiveProperty, value); }
-        //}
-
-        //public string Title
-        //{
-        //    get { return (string) GetValue(TitleProperty); }
-        //    set { SetValue(TitleProperty, value); }
-        //}
-
-        //public double FeetY
-        //{
-        //    get { return (double) GetValue(FeetYProperty); }
-        //    set { SetValue(FeetYProperty, value); }
-        //}
-
-        //public double FeetX
-        //{
-        //    get { return (double) GetValue(FeetXProperty); }
-        //    set { SetValue(FeetXProperty, value); }
-        //}
-
-        //public double Heading
-        //{
-        //    get { return (double) GetValue(HeadingProperty); }
-        //    set { SetValue(HeadingProperty, value); }
-        //}
-
-        //public double Roll
-        //{
-        //    get { return (double) GetValue(RollProperty); }
-        //    set { SetValue(RollProperty, value); }
-        //}
+        private static void ShowGimbalPropertyChangedCallback(DependencyObject dependencyObject,
+            DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
+        {
+            try
+            {
+                var ctl = (DroneOverlayControl) dependencyObject;
+                bool val = (bool) dependencyPropertyChangedEventArgs.NewValue;
+                ctl.DroneGimbalControl.Visibility = val ? Visibility.Visible  : Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message;
+            }
+        }   
+        
 
 
     }

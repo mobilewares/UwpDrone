@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="AwareGroup.IoTDroneDisplay.MissionControl.Controls.MissionSelectControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AwareGroup.IoTDroneDisplay.MissionControl.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <Grid Height="290" Width="250" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="VisualStateGroup">
+                <VisualStateGroup.Transitions>
+                    <VisualTransition GeneratedDuration="0:0:0.2"/>
+                    <VisualTransition From="MissionSelected" GeneratedDuration="0:0:0.2" To="MissionDeselected">
+                        <VisualTransition.GeneratedEasingFunction>
+                            <ExponentialEase EasingMode="EaseIn"/>
+                        </VisualTransition.GeneratedEasingFunction>
+                    </VisualTransition>
+                    <VisualTransition From="MissionDeselected" GeneratedDuration="0:0:0.2" To="MissionSelected">
+                        <VisualTransition.GeneratedEasingFunction>
+                            <ExponentialEase EasingMode="EaseOut"/>
+                        </VisualTransition.GeneratedEasingFunction>
+                    </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="MissionSelected">
+                    <VisualState.Setters>
+                        <Setter Target="MissionButton.(Control.Foreground)" Value="{StaticResource RadioButtonOnForeground}"/>
+                        <Setter Target="MissionButton.(Control.Background)" Value="{StaticResource RadioButtonOnBackground}"/>
+                        <Setter Target="grid.(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Value="1"/>
+                        <Setter Target="grid.(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Value="1"/>
+                        <Setter Target="grid.(UIElement.Opacity)" Value="1.0"/>
+                        <Setter Target="SelectedPath.(UIElement.Opacity)" Value="1"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="MissionDeselected">
+                    <VisualState.Setters>
+                        <Setter Target="MissionButton.(Control.Foreground)" Value="{StaticResource RadioButtonOffForeground}"/>
+                        <Setter Target="MissionButton.(Control.Background)" Value="{StaticResource RadioButtonOffBackground}"/>
+                        <Setter Target="grid.(UIElement.RenderTransform).(CompositeTransform.ScaleX)" Value="0.8"/>
+                        <Setter Target="grid.(UIElement.RenderTransform).(CompositeTransform.ScaleY)" Value="0.8"/>
+                        <Setter Target="grid.(UIElement.Opacity)" Value="0.8"/>
+                        <Setter Target="SelectedPath.(UIElement.Opacity)" Value="0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="grid" RenderTransformOrigin="0.5,0.5" Opacity="0.8">
+            <Grid.RenderTransform>
+                <CompositeTransform ScaleX="0.8" ScaleY="0.8"/>
+            </Grid.RenderTransform>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="140"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Image x:Name="MissionIcon" Source="../Images/icon_target.png" Width="180" Height="140"/>
+            <Image x:Name="MissionShadow" Source="../Images/shadow.png" Grid.Row="1"/>
+            <Image x:Name="MissionReflection" Source="../Images/icon_target_reflection.png" Width="180" Height="140" Grid.Row="2" Grid.RowSpan="2" Margin="0,0,0,-140" VerticalAlignment="Top"/>
+        </Grid>
+        <Grid  HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="100">
+            <Button x:Name="MissionButton" Width="180" Height="45" Content="MISSION 1" FontSize="20" Padding="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Style="{StaticResource ClearButtonStyle}"
+                Background="{StaticResource RadioButtonOffBackground}" Foreground="{StaticResource RadioButtonOffForeground}" Margin="0,0,0,40"/>
+            <Path x:Name="SelectedPath" Data="M90,0 L101.885,15 L78.1151,15 z M0,18 L180,18 L180,15 L0,15 z" Stretch="Fill" Fill="{StaticResource PanelBackgroundWhite}" Height="18" Margin="0,0,0,20" RenderTransformOrigin="0.5,0.666667" VerticalAlignment="Bottom" Visibility="Visible" StrokeThickness="0" UseLayoutRounding="False" Width="180" Opacity="0">
+                <Path.RenderTransform>
+                    <CompositeTransform ScaleY="-1"/>
+                </Path.RenderTransform>
+            </Path>
+        </Grid>
+    </Grid>
+</UserControl>
