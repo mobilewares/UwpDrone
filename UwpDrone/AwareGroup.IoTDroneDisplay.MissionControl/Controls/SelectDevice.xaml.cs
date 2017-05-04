@@ -22,6 +22,20 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Controls
         public SelectDevice()
         {
             this.InitializeComponent();
+            PrimaryButtonText = "";
+            lv.SelectionChanged += LvOnSelectionChanged;
+        }
+
+        private void LvOnSelectionChanged(object sender, SelectionChangedEventArgs selectionChangedEventArgs)
+        {
+            if (lv.SelectedItem == null)
+            {
+                PrimaryButtonText = "";
+            }
+            else
+            {
+                PrimaryButtonText = "Connect";
+            }
         }
 
         private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)

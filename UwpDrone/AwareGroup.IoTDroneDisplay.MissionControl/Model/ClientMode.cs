@@ -8,7 +8,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Model
 {
     public enum ClientMode
     {
-        UDPServer = 0,
+        Broadcast = 0,
         HttpDirect = 1,
         None = 2
     }

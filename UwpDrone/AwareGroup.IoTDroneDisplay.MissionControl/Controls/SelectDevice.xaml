@@ -15,7 +15,7 @@
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     >
     <Grid d:DataContext="{Binding Source={d:DesignInstance Type=viewmodels:SelectDeviceViewModel}}">
-        <ListView Margin="0,20" Height="300" Width="400" Background="#22FFFFFF" SelectionMode="Single" ItemsSource="{Binding NanoServerInstances}" SelectedItem="{Binding SelectedInstance, Mode=TwoWay}">
+        <ListView x:Name="lv"  Margin="0,20,0,50" Height="300" Width="400" Background="#22FFFFFF" SelectionMode="Single" ItemsSource="{Binding Endpoints}" SelectedItem="{Binding SelectedEndpoint, Mode=TwoWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Margin="0,5,0,10">
@@ -29,5 +29,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        
+        <TextBlock Style="{StaticResource MissionStatusTextStyle}" FontSize="20" FontWeight="SemiLight"  Text="- No Devices Located -" 
+                   Visibility="{Binding ShowNoResultsMessage, Converter={StaticResource VisibilityConverter}}"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <HyperlinkButton Content="Scan for new Vehicles" VerticalAlignment="Bottom" Foreground="{StaticResource TextColorHighlight}" Command="{Binding RefreshCommand}"/>
     </Grid>
 </ContentDialog>

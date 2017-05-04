@@ -8,16 +8,54 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                
                 <ResourceDictionary Source="DroneTheme.xaml"/>
+                
                 <ResourceDictionary>
                     <common:VisibilityConverter x:Key="VisibilityConverter"/>
                     <common:InverseVisibilityConverter x:Key="InverseVisibilityConverter"/>
+
+
+                    <Style x:Key="HeaderText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="72"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorHighlight}"/>
+                    </Style>
+                    
+                    <Style x:Key="MissionHeaderText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="48"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
+                    </Style>
+                    
+                    <Style x:Key="MissionSubHeaderText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="24"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
+                    </Style>
+                    
+                    <Style x:Key="LogSubHeaderText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="24"/>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorHighlight}"/>
+                    </Style>
+                    
+                    <Style x:Key="MissionDescriptionText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
+                        <Setter Property="TextWrapping" Value="WrapWholeWords"/>
+                    </Style>
+                    
+                    <Style x:Key="LogText" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="18"/>
+                        <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource TextColorWhite}"/>
+                        <Setter Property="TextWrapping" Value="NoWrap"/>
+                    </Style>
 
                     <Style x:Key="ClearButtonStyle" TargetType="Button">
                         <Setter Property="Background" Value="Transparent"/>
                         <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
                         <Setter Property="BorderBrush" Value="Transparent"/>
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="IsTabStop" Value="False"/>
                         <Setter Property="Padding" Value="0"/>
                         <Setter Property="HorizontalAlignment" Value="Left"/>
                         <Setter Property="VerticalAlignment" Value="Center"/>
@@ -82,7 +120,17 @@
                             </Setter.Value>
                         </Setter>
                     </Style>
-                    
+
+                    <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ClearButtonStyle}">
+                        <Setter Property="Background" Value="{StaticResource ButtonActionBackground}"/>
+                        <Setter Property="Foreground" Value="{StaticResource ButtonActionForeground}"/>
+                        <Setter Property="FontSize" Value="20"/>
+                        <Setter Property="Width" Value="180"/>
+                        <Setter Property="Height" Value="45"/>
+                    </Style>
+
+
+
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

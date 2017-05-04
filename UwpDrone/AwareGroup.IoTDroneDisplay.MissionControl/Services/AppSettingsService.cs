@@ -10,19 +10,63 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Services
 {
     public class AppSettingsService : Bindable
     {
-        private readonly ApplicationSettingsString _ipAddressSetting = new ApplicationSettingsString("IPADDRESS", "");
-        private readonly ApplicationSettingsBool _showMissionbuttons = new ApplicationSettingsBool("SHOWMISSIONBUTTONS", true);
+        private readonly ApplicationSettingsString _connectionMode = new ApplicationSettingsString("CONNECTIONMODE", "HTTP");
+        private readonly ApplicationSettingsString _ipAddressHttpSetting = new ApplicationSettingsString("IPADDRESSHTTP", "192.168.1.9");
+        private readonly ApplicationSettingsString _titleHttpSetting = new ApplicationSettingsString("TITLEHTTP", "PROJECT ARYA");
+        private readonly ApplicationSettingsString _portHttpSetting = new ApplicationSettingsString("PORTHTTP", "3000");
+        private readonly ApplicationSettingsString _portBroadcastSetting = new ApplicationSettingsString("PORTBROADCAST", "3000");
+        private readonly ApplicationSettingsString _titleNoneSetting = new ApplicationSettingsString("TITLENONE", "PROJECT ARYA");
+        private readonly ApplicationSettingsBool _hideMissionbuttons = new ApplicationSettingsBool("HIDEMISSIONBUTTONS", true);
         private readonly ApplicationSettingsBool _projectOutput = new ApplicationSettingsBool("PROJECTOUTPUT", true);
         private readonly ApplicationSettingsBool _launchRemoteDesktop = new ApplicationSettingsBool("LAUNCHREMOTEDESKTOP", true);
-        private readonly ApplicationSettingsString _connectionMode = new ApplicationSettingsString("CONNECTIONMODE", "HTTP");
 
-        public string IpAddress
+        public string IpAddressHttp
         {
-            get { return _ipAddressSetting.GetValue(); }
+            get { return _ipAddressHttpSetting.GetValue(); }
             set
             {
-                _ipAddressSetting.SetValue(value??""); 
-                NotifyPropertyChanged("IpAddress");
+                _ipAddressHttpSetting.SetValue(value??""); 
+                NotifyPropertyChanged("IpAddressHttp");
+            }
+        }
+
+        public string PortHttp
+        {
+            get { return _portHttpSetting.GetValue(); }
+            set
+            {
+                _portHttpSetting.SetValue(value ?? "");
+                NotifyPropertyChanged("PortHttp");
+            }
+        }
+
+        public string PortBroadcast
+        {
+            get { return _portBroadcastSetting.GetValue(); }
+            set
+            {
+                _portBroadcastSetting.SetValue(value ?? "");
+                NotifyPropertyChanged("PortBroadcast");
+            }
+        }
+
+        public string TitleHttp
+        {
+            get { return _titleHttpSetting.GetValue(); }
+            set
+            {
+                _titleHttpSetting.SetValue(value ?? "");
+                NotifyPropertyChanged("TitleHttp");
+            }
+        }
+
+        public string TitleNone
+        {
+            get { return _titleNoneSetting.GetValue(); }
+            set
+            {
+                _titleNoneSetting.SetValue(value ?? "");
+                NotifyPropertyChanged("TitleNone");
             }
         }
 
@@ -36,13 +80,23 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Services
             }
         }
 
-        public bool ShowMissionButtons
+        public bool HideMissionButtons
         {
-            get { return _showMissionbuttons.GetValue(); }
+            get { return _hideMissionbuttons.GetValue(); }
             set
             {
-                _showMissionbuttons.SetValue(value);
-                NotifyPropertyChanged("ShowMissionButtons");
+                _hideMissionbuttons.SetValue(value);
+                NotifyPropertyChanged("HideMissionButtons");
+            }
+        }
+
+        public bool ProjectOutput
+        {
+            get { return _projectOutput.GetValue(); }
+            set
+            {
+                _projectOutput.SetValue(value);
+                NotifyPropertyChanged("ProjectOutput");
             }
         }
 
@@ -52,7 +106,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Services
             {
                 string tmp = _connectionMode.GetValue()??"";
                 if (tmp=="UDP")
-                    return ClientMode.UDPServer;
+                    return ClientMode.Broadcast;
                 else if (tmp=="HTTP")
                     return ClientMode.HttpDirect;
                 else
@@ -62,7 +116,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.Services
             {
                 switch (value)
                 {
-                    case ClientMode.UDPServer: _connectionMode.SetValue("UDP");
+                    case ClientMode.Broadcast: _connectionMode.SetValue("UDP");
                         break;
                     case ClientMode.HttpDirect:
                         _connectionMode.SetValue("HTTP");

@@ -113,12 +113,14 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\ClientMode.cs" />
+    <Compile Include="Model\DeviceEndpoint.cs" />
     <Compile Include="Model\DroneMission.cs" />
     <Compile Include="Model\MissionLogItem.cs" />
-    <Compile Include="Model\NanoInstance.cs" />
+    <Compile Include="Model\DeviceInstance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AppSettingsService.cs" />
-    <Compile Include="Services\DroneHttpClient.cs" />
+    <Compile Include="Services\DeviceWatcherService.cs" />
+    <Compile Include="Services\DroneHttpClientService.cs" />
     <Compile Include="Services\DroneMissionService.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
     <Compile Include="ViewModel\SelectDeviceViewModel.cs" />

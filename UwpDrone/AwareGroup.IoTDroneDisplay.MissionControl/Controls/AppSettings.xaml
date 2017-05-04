@@ -6,37 +6,47 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="APP SETTINGS"
-    PrimaryButtonText="Restart"
-    SecondaryButtonText="Done"
+    Title="MISSION CONTROL SETTINGS"
+    PrimaryButtonText="Apply Changes"
+    SecondaryButtonText="Cancel"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     Background="Black"
     Foreground="{StaticResource TextColorHighlight}"
     RequestedTheme="Dark"
+    
     >
 
     <Grid>
-        <Grid Height="400" Width="350">
+        <Grid Width="400">
             <StackPanel Margin="0,20">
-                
-                <TextBlock Text="Network Settings" Margin="0,0,0,10" FontWeight="SemiLight"/>
-                <RadioButton Content="UDP Listener" GroupName="Network" FontWeight="SemiBold" IsChecked="True"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Margin="30,0,0,10">
-                    <TextBlock Text="PORT : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
-                    <TextBox Background="White" Foreground="Black" Width="80" BorderThickness="0" Text="2020" Padding="10,2,6,3" MinHeight="20"/>
-                </StackPanel>
-                <RadioButton Content="Fixed HTTP Client" GroupName="Network" FontWeight="SemiBold"/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
-                    <TextBlock Text="ADDRESS : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
-                    <TextBox Background="White" Foreground="Black" Width="180" BorderThickness="0" Text="192.168.1.9:8090" Padding="10,2,6,3" MinHeight="20"/>
-                </StackPanel>
-                <RadioButton Content="Disabled" GroupName="Network" FontWeight="SemiBold"/>
 
-                <TextBlock Text="UI Settings" Margin="0,20,0,10" FontWeight="SemiLight"/>
-                <CheckBox Content="Show Mission Control"/>
-                <CheckBox Content="Show Mission Log"/>
-                <CheckBox Content="Control Projector Output"/>
+                <TextBlock Text="Vehicle Connection Mode" Margin="0,0,0,10" FontWeight="SemiLight"/>
+                <RadioButton x:Name="rdBroadcast" Content="Broadcast Listener" GroupName="Network" FontWeight="SemiBold" IsChecked="True"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Margin="30,0,0,10">
+                    <TextBlock Text="Http Port : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox x:Name="txtBroadcastPort" IsEnabled="{Binding ElementName=rdBroadcast, Path=IsChecked}"  Background="White" Foreground="Black" Width="80" BorderThickness="0" Text="2020" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+                <RadioButton x:Name="rdHttp" Content="Fixed HTTP Client" GroupName="Network" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
+                    <TextBlock Text="Title : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox x:Name="txtHttpTitle" IsEnabled="{Binding ElementName=rdHttp, Path=IsChecked}"  Background="White" Foreground="Black" Width="180" BorderThickness="0" Text="PROJECT ARYA" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
+                    <TextBlock Text="Address : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox x:Name="txtHttpAddress" IsEnabled="{Binding ElementName=rdHttp, Path=IsChecked}"  Background="White" Foreground="Black" Width="130" BorderThickness="0" Text="192.168.1.9" Padding="10,2,6,3" MinHeight="20" Margin="0,0,2,0"/>
+                    <TextBox x:Name="txtHttpPort" IsEnabled="{Binding ElementName=rdHttp, Path=IsChecked}" Background="White" Foreground="Black" Width="50" BorderThickness="0" Text="8090" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+                <RadioButton x:Name="rdNone" Content="Disabled" GroupName="Network" FontWeight="SemiBold"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
+                    <TextBlock Text="Title : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
+                    <TextBox x:Name="txtTitleNone" IsEnabled="{Binding ElementName=rdNone, Path=IsChecked}" Background="White" Foreground="Black" Width="180" BorderThickness="0" Text="PROJECT ARYA" Padding="10,2,6,3" MinHeight="20"/>
+                </StackPanel>
+
+                <TextBlock Text="Other Settings" Margin="0,30,0,10" FontWeight="SemiLight"/>
+                <CheckBox x:Name="chkHideMissionControls" Content="Hide Mission Controls"/>
+                <CheckBox x:Name="chkLaunchIoTRemote" Content="Launch/Control Windows IoT Remote Client" IsEnabled="False"/>
+                <CheckBox x:Name="chkLaunchProjector" Content="Launch/Control Projector Output" IsEnabled="False"/>
 
             </StackPanel>
         </Grid>

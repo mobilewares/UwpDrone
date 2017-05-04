@@ -8,12 +8,12 @@ using Windows.Security.Credentials;
 
 namespace AwareGroup.IoTDroneDisplay.MissionControl.Model
 {
-    public class NanoServerInstance : INotifyPropertyChanged
+    public class DeviceInstance : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
 
-        public NanoServerInstance(string name, string ip)
+        public DeviceInstance(string name, string ip)
         {
             this.name = name;
             this.ipAddress = ip;

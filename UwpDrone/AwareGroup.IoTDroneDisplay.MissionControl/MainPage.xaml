@@ -11,50 +11,8 @@
     <Page.DataContext>
         <viewModel:MainPageViewModel/>
     </Page.DataContext>
-    <Page.Resources>
-        <ResourceDictionary>
-            <Style x:Key="HeaderText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="72"/>
-                <Setter Property="Foreground" Value="{StaticResource TextColorHighlight}"/>
-            </Style>
-            <Style x:Key="MissionHeaderText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="48"/>
-                <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
-            </Style>
-            <Style x:Key="MissionSubHeaderText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
-            </Style>
-            <Style x:Key="LogSubHeaderText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="24"/>
-                <Setter Property="Foreground" Value="{StaticResource TextColorHighlight}"/>
-            </Style>
-            <Style x:Key="MissionDescriptionText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="18"/>
-                <Setter Property="FontWeight" Value="SemiBold"></Setter>
-                <Setter Property="Foreground" Value="{StaticResource TextColorExtraDark}"/>
-                <Setter Property="TextWrapping" Value="WrapWholeWords"/>
-            </Style>
-            <Style x:Key="LogText" TargetType="TextBlock">
-                <Setter Property="FontSize" Value="18"/>
-                <Setter Property="FontWeight" Value="SemiBold"></Setter>
-                <Setter Property="Foreground" Value="{StaticResource TextColorWhite}"/>
-                <Setter Property="TextWrapping" Value="NoWrap"/>
-            </Style>
-            <Style x:Key="ActionButtonStyle" TargetType="Button" BasedOn="{StaticResource ClearButtonStyle}">
-                <Setter Property="Background" Value="{StaticResource ButtonActionBackground}"/>
-                <Setter Property="Foreground" Value="{StaticResource ButtonActionForeground}"/>
-                <Setter Property="FontSize" Value="20"/>
-                <Setter Property="FontWeight" Value="Normal"/>
-                <Setter Property="Padding" Value="0"/>
-                <Setter Property="Width" Value="180"/>
-                <Setter Property="Height" Value="45"/>
-            </Style>
-        </ResourceDictionary>
-    </Page.Resources>
     <Grid Background="{StaticResource PanelBackgroundExtraDark}">
-        <!--<Viewbox HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,0"> Height="1110" Width="1080" VerticalAlignment="Top" -->
-            <Grid x:Name="HostGrid" Background="{StaticResource PanelBackgroundExtraDark}" >
+        <Grid x:Name="HostGrid" Background="{StaticResource PanelBackgroundExtraDark}" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="430"/>
@@ -72,11 +30,8 @@
                         </Border>
                     </Grid>
                 </Viewbox>
-                <Button Command="{Binding ShowSettingsCommand}" Style="{StaticResource ClearButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="70" Margin="30,0">
-                    <Grid>
-                        <Grid Name="backgroundGrid" Width="70" Height="70" Visibility="Visible">
-                            <Rectangle Fill="#00FFFFFF" Name="Rect" Visibility="Visible" />
-                        </Grid>
+                <Button Command="{Binding ShowSettingsCommand}" Style="{StaticResource ClearButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="70" Margin="30,0" IsTabStop="False">
+                    <Grid Width="70" Height="70" Visibility="Visible" Background="#00FFFFFF">
                         <Path Data="M15.799988,7.9000244C11.400024,7.9000244 7.7999878,11.5 7.7999878,15.900024 7.7999878,20.300018 11.400024,23.900024 15.799988,23.900024 20.200012,23.900024 23.799988,20.300018 23.799988,15.900024 23.799988,11.400024 20.299988,7.9000244 15.799988,7.9000244z M12.600037,0L15.5,4.1000061 16.900024,4.1000061 17.100037,4.1000061 20.100037,0.20001221 24.600037,2.2000122 23.799988,7.1000061 23.900024,7.2000122C24.200012,7.6000061,24.600037,8,25,8.4000244L25.100037,8.6000061 30.200012,7.9000244 32,12.5 27.700012,15.600006 27.700012,17 31.799988,20.100006 29.799988,24.600006 24.700012,23.700012 24.600037,23.800018 23.900024,24.5 23.700012,24.700012 24.400024,30.100006 19.700012,32 16.700012,27.700012 16.5,27.700012 15.200012,27.700012 14.799988,27.700012 11.5,31.900024 7,29.900024 7.9000244,24.700012 7.7999878,24.600006C7.5,24.400024,7.2999878,24.100006,7.1000366,23.900024L6.9000244,23.600006 1.7999878,24.300018 0,19.700012 4,16.800018 4,16.5 4,14.800018 0,11.700012 2,7.2000122 7,8C7.5,7.5,8,7,8.5,6.6000061L8,1.8000183z" Stretch="Uniform" Fill="{StaticResource TextColorHighlight}" Width="60" Height="60" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
                             <Path.RenderTransform>
                                 <TransformGroup>
@@ -89,11 +44,10 @@
                         </Path>
                     </Grid>
                 </Button>
-                <Button Command="{Binding SelectDeviceCommand}" Style="{StaticResource ClearButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="70" Margin="0,0,120,0">
-                    <Grid>
-                        <Grid Width="70" Height="70" Visibility="Visible">
-                            <Rectangle Fill="#00FFFFFF" Visibility="Visible" />
-                        </Grid>
+                <Button Command="{Binding SelectDeviceCommand}" Style="{StaticResource ClearButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="70" Margin="0,0,120,0"
+                        Visibility="{Binding ShowVehicleSelect, Converter={StaticResource VisibilityConverter}}"
+                        >
+                    <Grid Width="70" Height="70" Visibility="Visible" Background="#00FFFFFF">
                         <Path Data="M25.811005,13.568996L32,13.568996 32,16.631007 28.858002,16.631007C27.322006,22.182 22.25,26.277 16.21701,26.277 11.641006,26.277 7.6100006,23.924005 5.2559967,20.365991L8.9060059,20.365991C10.770004,22.252008 13.356003,23.424005 16.21701,23.424005 20.664001,23.424005 24.402008,20.581994 25.835999,16.631007L25.811005,16.631007z M16.21701,8.1740086C18.957001,8.1740086 21.182007,10.398007 21.182007,13.137996 21.182007,15.878993 18.957001,18.103997 16.21701,18.103997 13.477005,18.103997 11.251999,15.878993 11.251999,13.137996 11.251999,10.398007 13.477005,8.1740086 16.21701,8.1740086z M16.21701,0C21.264008,-2.3418579E-07,25.647003,2.8630054,27.848007,7.0450113L24.462997,7.0450113C22.589996,4.5140059 19.608002,2.8529956 16.21701,2.8529954 11.303009,2.8529956 7.2089996,6.3049905 6.1880035,10.91L6.1880035,13.972987 0,13.972987 0,10.91 3.2810059,10.91C4.3440094,4.7270186,9.7310028,-2.3418579E-07,16.21701,0z" 
                               Stretch="Uniform" Fill="{StaticResource TextColorHighlight}" Width="70" Height="70" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
                             <Path.RenderTransform>
@@ -117,24 +71,13 @@
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="1*"/>
                             </Grid.ColumnDefinitions>
-                            <!--<Grid Height="240" Width="250">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="140"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Image Source="Images/icon_target.png" Width="180" Height="140"/>
-                <Image Source="Images/shadow.png" Grid.Row="1"/>
-                <Image Source="Images/icon_target_reflection.png" Width="180" Height="140" Grid.Row="2" Margin="0,0,0,-140" VerticalAlignment="Top"/>
-            </Grid>-->
                             <controls:MissionSelectControl 
                                     Visibility="{Binding Mission1, Converter={StaticResource VisibilityConverter}}" 
                                     Title="{Binding Mission1.Title}"
                                     IconImage="{Binding Mission1.ButtonImage}"
                                     IconReflectionImage="{Binding Mission1.ButtonReflectionImage}"
                                     SelectMissionCommand="{Binding Mission1Command}"
-                                    Selected="{Binding Mission1Selected}"
-                />
+                                    Selected="{Binding Mission1Selected}" />
                             <controls:MissionSelectControl Grid.Column="1"
                                     Visibility="{Binding Mission2, Converter={StaticResource VisibilityConverter}}" 
                                     Title="{Binding Mission2.Title}"
@@ -168,9 +111,9 @@
                     <TextBlock Text="{Binding CurrentMission.Description}" 
                             Style="{StaticResource MissionDescriptionText}" Grid.Row="3" TextWrapping="WrapWholeWords"/>
                     <Rectangle Fill="{StaticResource TextColorExtraDark}" Height="4"  Grid.Row="3" VerticalAlignment="Bottom" Margin="0,0,0,0"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Row="4" Visibility="Visible">
-                        <Button Style="{StaticResource ActionButtonStyle}" Content="START MISSION" VerticalAlignment="Bottom" Margin="0,15,20,0"/>
-                        <Button Style="{StaticResource ActionButtonStyle}" Content="STOP MISSION" VerticalAlignment="Bottom" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0" Grid.Row="4" Visibility="{Binding ShowMissionControls, Converter={StaticResource VisibilityConverter}}">
+                        <Button Style="{StaticResource ActionButtonStyle}" Command="{Binding StartMissionCommand}" Content="START MISSION" VerticalAlignment="Bottom" Margin="0,15,20,0"/>
+                        <Button Style="{StaticResource ActionButtonStyle}" Command="{Binding StopMissionCommand}" Content="STOP MISSION" VerticalAlignment="Bottom" />
                     </StackPanel>
                 </Grid>
                 
@@ -183,8 +126,8 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,40,30">
                     <Button Style="{StaticResource ActionButtonStyle}" Content="RESET LOG" VerticalAlignment="Bottom" />
                 </StackPanel>-->
-                <Grid Margin="30">
-                    <Image Source="{Binding CurrentMission.MissionImage}" Width="370" Height="500" VerticalAlignment="Top"/>
+                <Grid Margin="0">
+                    <Image Source="{Binding CurrentMission.MissionImage}" Margin="0,30,0,0" Width="370" Height="500" VerticalAlignment="Top" HorizontalAlignment="Center"/>
                 </Grid>
             </Grid>
         </Grid>
