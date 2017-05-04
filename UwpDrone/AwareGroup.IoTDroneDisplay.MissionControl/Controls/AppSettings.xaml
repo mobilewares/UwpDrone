@@ -22,12 +22,12 @@
             <StackPanel Margin="0,20">
 
                 <TextBlock Text="Vehicle Connection Mode" Margin="0,0,0,10" FontWeight="SemiLight"/>
-                <RadioButton x:Name="rdBroadcast" Content="Broadcast Listener" GroupName="Network" FontWeight="SemiBold" IsChecked="True"/>
+                <RadioButton x:Name="rdBroadcast" Content="Discover via Device Watcher" GroupName="Network" FontWeight="SemiBold" IsChecked="True"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"  Margin="30,0,0,10">
                     <TextBlock Text="Http Port : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
                     <TextBox x:Name="txtBroadcastPort" IsEnabled="{Binding ElementName=rdBroadcast, Path=IsChecked}"  Background="White" Foreground="Black" Width="80" BorderThickness="0" Text="2020" Padding="10,2,6,3" MinHeight="20"/>
                 </StackPanel>
-                <RadioButton x:Name="rdHttp" Content="Fixed HTTP Client" GroupName="Network" FontWeight="SemiBold"/>
+                <RadioButton x:Name="rdHttp" Content="Known IP Address" GroupName="Network" FontWeight="SemiBold"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="30,0,0,10">
                     <TextBlock Text="Title : " Width="80" VerticalAlignment="Center" FontWeight="ExtraLight" Foreground="{StaticResource TextColorWhite}"/>
                     <TextBox x:Name="txtHttpTitle" IsEnabled="{Binding ElementName=rdHttp, Path=IsChecked}"  Background="White" Foreground="Black" Width="180" BorderThickness="0" Text="PROJECT ARYA" Padding="10,2,6,3" MinHeight="20"/>
@@ -45,7 +45,7 @@
 
                 <TextBlock Text="Other Settings" Margin="0,30,0,10" FontWeight="SemiLight"/>
                 <CheckBox x:Name="chkHideMissionControls" Content="Hide Mission Controls"/>
-                <CheckBox x:Name="chkLaunchIoTRemote" Content="Launch/Control Windows IoT Remote Client" IsEnabled="False"/>
+                <CheckBox x:Name="chkLaunchIoTRemote" Content="Launch/Control Windows IoT Remote Client"/>
                 <CheckBox x:Name="chkLaunchProjector" Content="Launch/Control Projector Output" IsEnabled="False"/>
 
             </StackPanel>

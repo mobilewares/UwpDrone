@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
@@ -20,6 +21,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
     public class MainPageViewModel : ViewModelBase
     {
         private const bool SimulateBroadcastService = true;
+        private const string IoTRemoteClientUriFormatString = "iotview://connect/?IP={0}";
 
         private AppSettingsService _settings = new AppSettingsService();
         private DeviceWatcherService _deviceWatcher = new DeviceWatcherService();
@@ -147,7 +149,12 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
                                                }
                                        });
                                    };
-                                   
+
+                                   //Code to launch IotView...
+                                   //string IoTRemoteClientUriFormatString = "iotview://connect/?IP={0}"; 
+
+                                   bool launchIoTRemote = false;
+                                   string remoteClientUri = "";
 
                                    //Show Dialog
                                    var res = await deviceSettings.ShowAsync();
@@ -160,9 +167,26 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
                                             _currentEndpoint.Port = _settings.PortBroadcast;
                                             _currentEndpoint.Name = dc.SelectedEndpoint.Name;
                                             _currentEndpoint.IsEnabled = true;
+                                            if (_settings.LaunchRemoteDesktop)
+                                            {
+                                                remoteClientUri = string.Format(IoTRemoteClientUriFormatString,
+                                                    _currentEndpoint.IpAddress);
+                                                launchIoTRemote = true;
+                                            }
                                         }
                                        FixEndpoint();
                                        UpdateEndpoint();
+                                   }
+
+                                   if (launchIoTRemote)
+                                   {
+                                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                       {
+                                           LauncherOptions lo = new LauncherOptions();
+                                           lo.DisplayApplicationPicker = false;
+                                           lo.TreatAsUntrusted = false;
+                                           Launcher.LaunchUriAsync(new Uri(remoteClientUri, UriKind.RelativeOrAbsolute));
+                                       });
                                    }
 
                                });
