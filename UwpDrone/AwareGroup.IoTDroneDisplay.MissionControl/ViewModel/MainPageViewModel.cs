@@ -20,7 +20,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
 {
     public class MainPageViewModel : ViewModelBase
     {
-        private const bool SimulateBroadcastService = true;
+        private const bool SimulateBroadcastService = false;
         private const string IoTRemoteClientUriFormatString = "iotview://connect/?IP={0}";
 
         private AppSettingsService _settings = new AppSettingsService();
@@ -124,16 +124,14 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
                                        if (_deviceWatcher.IsRunning)
                                            foreach (var svc in _deviceWatcher.GetDeviceEndpoints())
                                            {
-                                               dc.Endpoints.Add(svc);
+                                               dc.AddEndpoint(svc);
                                            }
                                    }
 
                                    if (_currentEndpoint.IsEnabled)
-                                   {
-                                       dc.SelectedEndpoint = dc.Endpoints.FirstOrDefault(o => (o.IpAddress == _currentEndpoint.IpAddress));
-                                   }
+                                       dc.SetEndpointFromIpAddress(_currentEndpoint.IpAddress);
                                    else
-                                        dc.SelectedEndpoint = null;
+                                       dc.SelectedEndpoint = null;
 
                                    deviceSettings.DataContext = dc;
 
@@ -145,7 +143,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
                                            if (_deviceWatcher.IsRunning)
                                                foreach (var svc in _deviceWatcher.GetDeviceEndpoints())
                                                {
-                                                   dc.Endpoints.Add(svc);
+                                                   dc.AddEndpoint(svc);
                                                }
                                        });
                                    };

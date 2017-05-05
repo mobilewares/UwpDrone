@@ -45,6 +45,19 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
             }
         }
 
+        public void SetEndpointFromIpAddress(string ipAddress)
+        {
+            try
+            {
+                SelectedEndpoint = Endpoints.FirstOrDefault(o => (o.IpAddress == ipAddress));
+                return;
+            }
+            catch (Exception e)
+            {
+            }
+            SelectedEndpoint = null;
+        }
+
 
         public void AddEndpoint(DeviceEndpoint endpoint)
         {

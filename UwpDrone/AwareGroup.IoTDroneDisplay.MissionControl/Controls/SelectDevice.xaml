@@ -30,9 +30,9 @@
             </ListView.ItemTemplate>
         </ListView>
         
-        <TextBlock Style="{StaticResource MissionStatusTextStyle}" FontSize="20" FontWeight="SemiLight"  Text="- No Devices Located -" 
+        <TextBlock Style="{StaticResource MissionStatusTextStyle}" FontSize="20" FontWeight="SemiLight"  Text="- No Vehicles Located -" 
                    Visibility="{Binding ShowNoResultsMessage, Converter={StaticResource VisibilityConverter}}"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20,0,50"/>
         <HyperlinkButton Content="Scan for new Vehicles" VerticalAlignment="Bottom" Foreground="{StaticResource TextColorHighlight}" Command="{Binding RefreshCommand}"/>
     </Grid>
 </ContentDialog>
