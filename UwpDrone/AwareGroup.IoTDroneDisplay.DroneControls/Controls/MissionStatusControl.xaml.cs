@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +23,11 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
         public MissionStatusControl()
         {
             this.InitializeComponent();
+            if (DesignMode.DesignModeEnabled)
+            {
+                Grid.Opacity = 0;
+                TitleText.Opacity = 0;
+            }
         }
 
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
@@ -39,7 +45,33 @@ namespace AwareGroup.IoTDroneDisplay.DroneControls.Controls
             {
                 var ctl = (MissionStatusControl)dependencyObject;
                 string val = (string)dependencyPropertyChangedEventArgs.NewValue;
-                ctl.TitleText.Text = val ?? "";
+
+                string newValue = val ?? "";
+                string oldValue = ctl.TitleText.Text ?? "";
+
+                if (!DesignMode.DesignModeEnabled)
+                    ctl.TitleText.Opacity = 0;
+                ctl.TitleText.Text = newValue;
+
+                if (!DesignMode.DesignModeEnabled)
+                {
+                    if (newValue != "")
+                    {
+                        if (newValue != oldValue)
+                        {
+                            if (oldValue=="")
+                                ctl.sbAppear.Begin();
+                            else
+                                ctl.sbSwitch.Begin();
+                        }
+                    }
+                    else
+                    {
+                        if (oldValue!="")
+                            ctl.sbHide.Begin();
+                    }
+                }
+               
             }
             catch (Exception ex)
             {

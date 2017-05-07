@@ -20,7 +20,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
 {
     public class MainPageViewModel : ViewModelBase
     {
-        private const bool SimulateBroadcastService = false;
+        private const bool SimulateBroadcastService = true;
         private const string IoTRemoteClientUriFormatString = "iotview://connect/?IP={0}";
 
         private AppSettingsService _settings = new AppSettingsService();
@@ -44,7 +44,28 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
         private RelayCommand _mission3Command;
         private RelayCommand _startMissionCommand;
         private RelayCommand _stopMissionCommand;
+        private RelayCommand _launchIoTRemoteCommand;
 
+
+        public RelayCommand LaunchIoTRemoteCommand
+        {
+            get
+            {
+                return _launchIoTRemoteCommand
+                       ?? (_launchIoTRemoteCommand = new RelayCommand(
+                           () =>
+                           {
+                               if (_settings != null)
+                                   if (_settings.ConnectionMode==ClientMode.HttpDirect)
+                                           if (_settings.LaunchRemoteDesktop)
+                                               if (_currentEndpoint.IsEnabled)
+                                                   {
+                                                     LaunchRemoteClient(string.Format(IoTRemoteClientUriFormatString,
+                                                            _currentEndpoint.IpAddress));
+                                                   }
+                           }));
+            }
+        }
     
         public RelayCommand StopMissionCommand
         {
@@ -178,13 +199,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
 
                                    if (launchIoTRemote)
                                    {
-                                       DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                       {
-                                           LauncherOptions lo = new LauncherOptions();
-                                           lo.DisplayApplicationPicker = false;
-                                           lo.TreatAsUntrusted = false;
-                                           Launcher.LaunchUriAsync(new Uri(remoteClientUri, UriKind.RelativeOrAbsolute));
-                                       });
+                                       LaunchRemoteClient(remoteClientUri);
                                    }
 
                                });
@@ -192,9 +207,15 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
             }
         }
 
-        private void Dc_RequestUpdateEndpoints(object sender, EventArgs e)
+        private void LaunchRemoteClient(string ipAddress)
         {
-            throw new NotImplementedException();
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                LauncherOptions lo = new LauncherOptions();
+                lo.DisplayApplicationPicker = false;
+                lo.TreatAsUntrusted = false;
+                Launcher.LaunchUriAsync(new Uri(ipAddress, UriKind.RelativeOrAbsolute));
+            });
         }
 
         public RelayCommand ShowSettingsCommand
@@ -297,8 +318,16 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
             }
         }
 
+        public bool ShowLaunchIoTRemote
+        {
+            get
+            {
+                if (_settings != null)
+                    return ((_settings.ConnectionMode == ClientMode.HttpDirect)&&(_settings.LaunchRemoteDesktop));
+                return false;
+            }
+        }
 
-        
 
         public string Title
         {
@@ -445,6 +474,7 @@ namespace AwareGroup.IoTDroneDisplay.MissionControl.ViewModel
             ShowMissionControls = (!_settings.HideMissionButtons) && (_currentEndpoint.IsEnabled);
             Title = _currentEndpoint.Name;
             RaisePropertyChanged("ShowVehicleSelect");
+            RaisePropertyChanged("ShowLaunchIoTRemote");
         }
     }
 }

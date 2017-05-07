@@ -27,6 +27,9 @@ namespace AwareGroup.IoTDroneDisplay.DroneAppExample
         public DroneControlViewModel VM { get; set; }
         private DispatcherTimer tmr = null;
 
+        private List<string> FakeMessages = new List<string>();
+        private int _lastMessageIdx = -1;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -35,6 +38,13 @@ namespace AwareGroup.IoTDroneDisplay.DroneAppExample
             VM = new DroneControlViewModel();
             this.DataContext = VM;
 
+            FakeMessages.Add("Scanning the Current Environment");
+            FakeMessages.Add("");
+            FakeMessages.Add("Found Something that Looks Interesting");
+            FakeMessages.Add("Ball Detected - Analyzing");
+            FakeMessages.Add("");
+            FakeMessages.Add("Found the Red Ball");
+            FakeMessages.Add("");
 
             //Handle Power Button
             DroneOverlay.PowerButtonClicked += delegate(object sender, EventArgs args)
@@ -44,28 +54,33 @@ namespace AwareGroup.IoTDroneDisplay.DroneAppExample
 
 
             //Fake Timer to pretend stuff is happening..
-            //this.Loaded += delegate(object sender, RoutedEventArgs args)
-            //{
-            //    tmr = new DispatcherTimer();
-            //    tmr.Interval = TimeSpan.FromMilliseconds(500.0);
-            //    tmr.Tick += TmrOnTick;
-            //    tmr.Start();
-            //};
+            this.Loaded += delegate (object sender, RoutedEventArgs args)
+            {
+                tmr = new DispatcherTimer();
+                tmr.Interval = TimeSpan.FromMilliseconds(4000.0);
+                tmr.Tick += TmrOnTick;
+                tmr.Start();
+            };
 
-            //this.Unloaded += delegate(object sender, RoutedEventArgs args)
-            //{
-            //    if (tmr!=null)
-            //        if (tmr.IsEnabled)
-            //            tmr.Stop();
-            //    tmr = null;
-            //};
-            
+            this.Unloaded += delegate (object sender, RoutedEventArgs args)
+            {
+                if (tmr != null)
+                    if (tmr.IsEnabled)
+                        tmr.Stop();
+                tmr = null;
+            };
+
 
         }
 
-        //private void TmrOnTick(object sender, object o)
-        //{
-            
-        //}
+        private void TmrOnTick(object sender, object o)
+        {
+            if (FakeMessages.Count == 0) return;
+            int newIdx = _lastMessageIdx + 1;
+            if (newIdx >= FakeMessages.Count)
+                newIdx = 0;
+            _lastMessageIdx = newIdx;
+            DroneOverlay.Status = FakeMessages[_lastMessageIdx];
+        }
     }
 }

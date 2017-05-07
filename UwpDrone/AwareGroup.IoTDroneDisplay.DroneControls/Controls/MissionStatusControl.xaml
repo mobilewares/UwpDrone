@@ -9,9 +9,47 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
     <UserControl.Resources>
-        <ResourceDictionary Source="..\DroneTheme.xaml"></ResourceDictionary>
+        <Storyboard x:Name="sbAppear">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Grid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="TitleText">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Projection).(PlaneProjection.RotationX)" Storyboard.TargetName="Grid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="-135"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="sbHide">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Grid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="sbSwitch">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="Grid">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="TitleText">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="1"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </UserControl.Resources>
-    <Grid  Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="{StaticResource PanelBackgroundOverlay}" Margin="0">
-        <TextBlock x:Name="TitleText" Text="Found the quick brown fox" Style="{StaticResource MissionStatusTextStyle}" Margin="10,0,10,4"/>
+
+    <Grid Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Center" >
+        <Grid.Resources>
+            <ResourceDictionary Source="..\DroneTheme.xaml"/>
+        </Grid.Resources>
+        <Grid x:Name="Grid" Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Center" Background="{StaticResource PanelBackgroundOverlay}" Margin="0" BorderBrush="White" BorderThickness="4,0,0,0" Opacity="0">
+            <Grid.Projection>
+                <PlaneProjection/>
+            </Grid.Projection>
+            <TextBlock x:Name="TitleText" Text="Found the quick brown fox" Style="{StaticResource MissionStatusTextStyle}" Margin="20,0,20,4"/>
+        </Grid>
     </Grid>
 </UserControl>

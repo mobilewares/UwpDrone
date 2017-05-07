@@ -61,6 +61,23 @@
                         </Path>
                     </Grid>
                 </Button>
+                <Button Command="{Binding LaunchIoTRemoteCommand}" Style="{StaticResource ClearButtonStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="70" Margin="0,0,120,0"
+                        Visibility="{Binding ShowLaunchIoTRemote, Converter={StaticResource VisibilityConverter}}"
+                        >
+                    <Grid Width="70" Height="70" Visibility="Visible" Background="#00FFFFFF">
+                        <Path Data="M1,9.9999857L11,9.9999857 11,11.999986 2,11.999986 2,29.999986 30,29.999986 30,11.999986 21,11.999986 21,9.9999857 31,9.9999857C31.553009,9.9999857,32,10.446977,32,10.999986L32,30.999986C32,31.552964,31.553009,31.999986,31,31.999986L1,31.999986C0.44702148,31.999986,0,31.552964,0,30.999986L0,10.999986C0,10.446977,0.44702148,9.9999857,1,9.9999857z M16.000002,0L16.999804,1 20.949013,4.9499898 19.535009,6.3639865 16.999996,3.8282671 16.999996,17 14.999997,17 14.999997,3.8282776 12.464994,6.3639865 11.050992,4.9499898 14.999997,1.0002031z" 
+                              Stretch="Uniform" Fill="{StaticResource TextColorHighlight}" Width="60" Height="60" Margin="0,0,0,0" RenderTransformOrigin="0.5,0.5">
+                            <Path.RenderTransform>
+                                <TransformGroup>
+                                    <TransformGroup.Children>
+                                        <RotateTransform Angle="0" />
+                                        <ScaleTransform ScaleX="1" ScaleY="1" />
+                                    </TransformGroup.Children>
+                                </TransformGroup>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Grid>
+                </Button>
             </Grid>
             <Grid x:Name="MissionSelectGrid" Background="{StaticResource PanelBackgroundMedium}" Grid.ColumnSpan="2" Grid.Row="1">
                 <Viewbox HorizontalAlignment="Stretch" MaxHeight="300" VerticalAlignment="Bottom" >
